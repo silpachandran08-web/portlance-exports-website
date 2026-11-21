@@ -251,10 +251,9 @@ footer{position:relative;z-index:3;background:var(--bg);border-top:1px solid var
       <p style="color:var(--muted);max-width:30em">Tell us the product, grade, quantity and destination port. We reply with pricing and availability.</p>
       <dl class="spec info"><dt>Email</dt><dd><a href="mailto:mishalms596@gmail.com">mishalms596@gmail.com</a></dd><dt>Website</dt><dd>portlanceexports.com</dd></dl>
     </div>
-    <!-- Netlify Forms: detected at deploy time; submissions appear under Forms → "quote" and are emailed via Form notifications -->
-    <form id="quote" name="quote" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-email="mishalms596@gmail.com">
-      <input type="hidden" name="form-name" value="quote">
-      <p hidden><label>Leave this empty<input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+    <!-- Enquiries are emailed to data-email via FormSubmit (formsubmit.co); the first submission sends that inbox a one-time activation link -->
+    <form id="quote" name="quote" data-email="mishalms596@gmail.com">
+      <p hidden><label>Leave this empty<input name="_honey" tabindex="-1" autocomplete="off"></label></p>
       <div class="row"><label for="f-name">Name<input id="f-name" name="name" required autocomplete="name"></label><label for="f-co">Company<input id="f-co" name="company" autocomplete="organization"></label></div>
       <div class="row"><label for="f-email">Email<input id="f-email" name="email" type="email" required autocomplete="email"></label><label for="f-phone">Phone / WhatsApp<input id="f-phone" name="phone" type="tel" autocomplete="tel"></label></div>
       <div class="row"><label for="f-prod">Product<select id="f-prod" name="product"><option>Green cardamom 7–8 mm, deep green</option></select></label><label for="f-qty">Quantity<input id="f-qty" name="qty" placeholder="e.g. 1 × 20′ FCL"></label></div>
@@ -270,15 +269,18 @@ footer{position:relative;z-index:3;background:var(--bg);border-top:1px solid var
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
 
-// Enquiry form: posts to Netlify Forms (which emails each enquiry). If the site is hosted somewhere
-// without Netlify Forms, the post fails and we fall back to opening the visitor's mail app.
+// Enquiry form: sent to FormSubmit, which emails it to data-email (works on Vercel or any static host).
+// If FormSubmit is unreachable or not yet activated, fall back to opening the visitor's mail app.
 document.getElementById('quote').addEventListener('submit', async e => {
   e.preventDefault();
   const form = e.target, btn = form.querySelector('button'), status = document.getElementById('quote-status'), f = new FormData(form);
   btn.disabled = true; btn.textContent = 'Sending…'; status.textContent = '';
   try {
-    const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(f).toString() });
-    if (!res.ok) throw new Error(res.status);
+    const data = Object.fromEntries(f);
+    Object.assign(data, { _subject: `Website enquiry: ${data.product} (${data.name})`, _replyto: data.email, _template: 'table', _captcha: 'false' });
+    const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.email}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || String(out.success) !== 'true') throw new Error(out.message || res.status);
     form.reset(); btn.textContent = 'Enquiry sent';
     status.textContent = 'Thank you. We have your enquiry and will reply by email, usually within one working day.';
   } catch {
