@@ -22,8 +22,8 @@
 <style>
 /* Layout: full-bleed 3D (slow-motion spice rain, then the export route) behind a left narrative column; spec-sheet sections on solid ground below */
 :root{
-  --chalk:#F6F5F0; --stone:#E7E4DA; --ink:#1E2A24; --ink-2:#4C5A51; --mist:#8C9A8F;
-  --cardamom:#4E7A2E; --pepper:#7A3B22; --saffron:#C9A227; --line:rgba(30,42,36,.14);
+  --chalk:#F7F6F2; --panel:#FBFAF7; --stone:#ECE9E1; --ink:#16201B; --ink-2:#46524B; --mist:#8C9A8F;
+  --cardamom:#3F6B2A; --pepper:#3B2A22; --saffron:#B8892B; --line:#E2DED3;
   --accent:var(--cardamom);
   --display:"Plus Jakarta Sans","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -40,9 +40,22 @@ a{color:inherit}
 
 #scene{position:fixed;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 1.4s ease}
 #scene.ready{opacity:1}
-.scrim{position:fixed;inset:0;pointer-events:none;z-index:1;
-  background:linear-gradient(90deg,rgba(246,245,240,.95) 0,rgba(246,245,240,.8) 30%,rgba(246,245,240,0) 60%),
-             linear-gradient(180deg,rgba(246,245,240,.85) 0,rgba(246,245,240,0) 15%)}
+.scrim{position:fixed;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(247,246,242,.9) 0,rgba(247,246,242,0) 14%)}
+#progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:30;background:var(--accent);transform-origin:0 50%;transform:scaleX(0)}
+.copy>*{transition:opacity .8s cubic-bezier(.2,.7,0,1),transform .8s cubic-bezier(.2,.7,0,1)}
+.copy:not(.in)>*{opacity:0;transform:translateY(14px)}
+.copy>:nth-child(2){transition-delay:.06s}.copy>:nth-child(3){transition-delay:.12s}.copy>:nth-child(4){transition-delay:.18s}.copy>:nth-child(5){transition-delay:.24s}
+#inspect{position:fixed;right:max(20px,3vw);bottom:max(24px,4vh);z-index:15;width:min(300px,calc(100vw - 32px));padding:18px 20px;border-radius:16px;background:rgba(251,250,247,.9);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid #E8E4DA;box-shadow:0 20px 50px -24px rgba(22,32,27,.3);transition:opacity .5s,transform .5s}
+#inspect.off{opacity:0;transform:translateY(10px);pointer-events:none}
+#inspect small{display:block;font:600 .64rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+#inspect b{display:block;font:600 1.05rem/1.3 var(--display);margin:8px 0 6px;color:var(--ink)}
+#inspect p{font-size:.85rem;line-height:1.5;color:var(--ink-2)}
+#inspect dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.82rem;margin-top:6px}#inspect dt{color:var(--ink-2)}#inspect dd{color:var(--ink);font-weight:500}
+.sieve{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.sieve span{font:600 .64rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-right:4px}
+.sieve button{font:500 .8rem/1 var(--body);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 11px;cursor:pointer}
+.sieve button[aria-pressed="true"]{background:var(--ink);color:var(--chalk);border-color:var(--ink)}
+.sieve output{flex-basis:100%;font-size:.84rem;color:var(--ink);margin-top:4px}
 #veil{position:fixed;inset:0;z-index:1;background:var(--chalk);opacity:0;pointer-events:none;transition:opacity .28s ease}
 #veil.on{opacity:1}
 
@@ -54,12 +67,12 @@ header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:c
 header nav{display:flex;align-items:center;gap:26px}
 header nav a{font:500 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--ink-2)}
 header nav a:hover{color:var(--ink)}
-header nav a.cta{color:var(--chalk);background:var(--ink);padding:12px 16px;border-radius:999px}
+header nav a.cta{color:var(--chalk);background:var(--ink);padding:12px 16px;border-radius:10px}
 
 .stage{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;padding:120px var(--gut) 80px}
 .copy{max-width:34rem;transition:opacity .9s ease,transform .9s ease;position:relative;padding:34px 36px;border-radius:22px;
-  background:rgba(246,245,240,.8);-webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15);
-  border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 24px 60px -24px rgba(30,42,36,.22)} /* frosted panel: text always sits on a calm surface */
+  background:rgba(251,250,247,.86);-webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15);
+  border:1px solid #E8E4DA;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 24px 60px -24px rgba(30,42,36,.22)} /* frosted panel: text always sits on a calm surface */
 .copy:not(.in){opacity:0;transform:translateY(22px)}
 .kicker{display:flex;align-items:center;gap:12px;font:500 .7rem/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);transition:color .4s}
 .kicker::after{content:"";width:40px;height:1px;background:var(--saffron)}
@@ -73,9 +86,12 @@ h1 em,h2 em{font-style:normal;color:var(--accent)}
 .spec dt{font:500 .64rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);padding-right:26px;display:flex;align-items:center}
 .spec dd{font:400 .84rem/1.4 var(--mono);font-variant-numeric:tabular-nums}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:22px;margin-top:28px}
-.btn{display:inline-block;background:var(--ink);color:var(--chalk);text-decoration:none;border:0;cursor:pointer;border-radius:999px;
+.btn{display:inline-block;background:var(--ink);color:var(--chalk);text-decoration:none;border:0;cursor:pointer;border-radius:10px;
   font:500 .74rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:16px 22px;transition:background .2s}
-.btn:hover{background:var(--accent)}
+.btn:hover{background:var(--accent);transform:translateY(-1px);box-shadow:0 10px 24px -12px rgba(22,32,27,.45)}
+.btn{transition:background .2s,transform .2s,box-shadow .2s}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--chalk)}
 .link{font:500 .74rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--saffron);padding-bottom:6px}
 
 #rail{position:fixed;right:max(18px,2.4vw);top:50%;transform:translateY(-50%);z-index:20;list-style:none;display:grid;gap:13px;transition:opacity .5s}
@@ -135,6 +151,11 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
   header{flex-wrap:wrap;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 10px;background:linear-gradient(rgba(246,245,240,.96),rgba(246,245,240,.85) 75%,rgba(246,245,240,0))}
   .brand small{display:none}.brand b{font-size:1.25rem}
   header nav a.cta{padding:10px 12px;font-size:.64rem}
+  #inspect{top:72px;bottom:auto;right:12px;width:min(230px,60vw);padding:12px 14px}#inspect p{display:none}
+  #inspect.idle{opacity:0;pointer-events:none}
+  .copy{padding:22px 20px}
+  #top .copy .spec{display:none}
+  #top .copy .actions{gap:10px;margin-top:18px}#top .copy .btn{padding:13px 14px;font-size:.66rem}
   .scrim{background:linear-gradient(0deg,rgba(246,245,240,.97) 0,rgba(246,245,240,.88) 42%,rgba(246,245,240,0) 68%),linear-gradient(180deg,rgba(246,245,240,.8) 0,rgba(246,245,240,0) 18%)}
   .stage{align-items:flex-end;padding:150px 20px 8vh}
   h2{font-size:2.1rem}
@@ -158,6 +179,8 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
   <nav><a href="#journey">Export</a><a href="#products">Specs</a><a href="#process">Process</a><a class="cta" href="#contact">Request a quote</a></nav>
 </header>
 <ol id="rail" aria-label="Sections"></ol>
+<div id="progress" aria-hidden="true"></div>
+<aside id="inspect" class="off" aria-live="polite"><small>Inspection</small><b>Tap the falling spices</b><p>Click or tap anywhere on the scene to pull a peppercorn or a cardamom pod in for a closer look.</p></aside>
 
 <main id="journey-wrap">
   <section class="stage" id="top" data-name="Intro">
@@ -166,14 +189,14 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
       <h1>Whole spices, <em>exported with care.</em></h1>
       <p>Portlance Exports supplies whole black pepper and 7–8 mm deep green cardamom to importers and wholesalers worldwide, graded, packed and sealed at origin.</p>
       <dl class="spec"><dt>Black pepper</dt><dd>Whole · sun-dried · grade to order</dd><dt>Green cardamom</dt><dd>7–8 mm · deep green</dd></dl>
-      <div class="actions"><a class="btn" href="#contact">Request a quote</a><a class="link" href="#products">View specifications →</a></div>
+      <div class="actions"><a class="btn" href="#contact" data-type="Quote">Request a quote</a><a class="btn ghost" href="#contact" data-type="Sample">Request a sample</a></div>
       <p class="sr">Scene: whole black peppercorns and green cardamom capsules falling in slow motion onto a glass floor, bouncing and scattering.</p>
     </div>
   </section>
 
   <section class="stage" id="journey" data-name="Load">
     <div class="copy">
-      <div class="kicker">01 / 02 · Packed, loaded &amp; sealed</div>
+      <div class="kicker">Packed, loaded &amp; sealed</div>
       <h2>Packed, loaded, <em>sealed at origin.</em></h2>
       <p>Every lot is cleaned, graded and tested, packed to your specification, then stuffed and sealed into the container at our end with the export documents ready.</p>
       <dl class="spec"><dt>Black pepper</dt><dd>25 / 50 kg jute or PP bags</dd><dt>Green cardamom</dt><dd>10 / 25 kg lined cartons or bags</dd><dt>Shipments</dt><dd>20′ / 40′ FCL · LCL</dd><dt>Documents</dt><dd>Phyto · Origin · Quality</dd></dl>
@@ -183,11 +206,11 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
 
   <section class="stage" data-name="Ship">
     <div class="copy">
-      <div class="kicker">02 / 02 · Delivered</div>
+      <div class="kicker">Delivered</div>
       <h2>One partner <em>for both spices.</em></h2>
       <p>Black pepper and green cardamom from one exporter: consistent lots, clear specifications and samples before you contract.</p>
       <dl class="spec"><dt>Terms</dt><dd>FOB · CFR · CIF</dd><dt>Samples</dt><dd>Before contract</dd></dl>
-      <div class="actions"><a class="btn" href="#contact">Request a quote</a><a class="link" href="#products">View specs →</a></div>
+      <div class="actions"><a class="btn" href="#contact" data-type="Quote">Request a quote</a><a class="btn ghost" href="#contact" data-type="Sample">Request a sample</a></div>
       <p class="sr">Scene: the sealed container in a port yard among stacked containers.</p>
     </div>
   </section>
@@ -201,7 +224,8 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
   <div class="bench">
     <figure class="viewer">
       <canvas id="spec" role="img" aria-label="A whole black peppercorn and a green cardamom capsule lying on a millimetre ruler. The cardamom capsule is about 7.5 mm across."></canvas>
-      <figcaption>Drag to turn · ruler in millimetres · peppercorn about 4.5 mm · cardamom capsule 7.5 mm across</figcaption>
+      <div class="sieve" role="group" aria-label="Sieve test"><span>Sieve test</span><button data-sieve="6" aria-pressed="false">6 mm</button><button data-sieve="7" aria-pressed="false">7 mm</button><button data-sieve="8" aria-pressed="true">8 mm</button><output id="sieve-out">The 7.5 mm capsule passes through the 8 mm sieve.</output></div>
+      <figcaption>Drag to turn · ruler in millimetres · peppercorn about 4.5 mm · cardamom capsule 7.5 mm across. A 7–8 mm grade passes the 8 mm sieve and is retained on the 7 mm sieve.</figcaption>
     </figure>
     <div class="cards">
       <article class="card" data-for="pepper">
@@ -239,8 +263,8 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
   <div class="contact">
     <div>
       <div class="kicker">Enquiries</div>
-      <h2>Request a quote</h2>
-      <p style="color:var(--ink-2);max-width:30em">Tell us the product, quantity and destination port. We reply with pricing, availability and sample details.</p>
+      <h2>Request a quote or sample</h2>
+      <p style="color:var(--ink-2);max-width:30em">Tell us the product, quantity and destination port. We reply with pricing and availability, or arrange a sample before you contract.</p>
       <dl class="spec"><dt>Email</dt><dd><a href="mailto:mishalms596@gmail.com">mishalms596@gmail.com</a></dd><dt>Website</dt><dd>portlanceexports.com</dd></dl>
     </div>
     <!-- Enquiries are emailed to data-email via FormSubmit (formsubmit.co); the first submission sends that inbox a one-time activation link -->
@@ -248,8 +272,9 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
       <p hidden><label>Leave this empty<input name="_honey" tabindex="-1" autocomplete="off"></label></p>
       <div class="row"><label for="f-name">Name<input id="f-name" name="name" required autocomplete="name"></label><label for="f-co">Company<input id="f-co" name="company" autocomplete="organization"></label></div>
       <div class="row"><label for="f-email">Email<input id="f-email" name="email" type="email" required autocomplete="email"></label><label for="f-phone">Phone / WhatsApp<input id="f-phone" name="phone" type="tel" autocomplete="tel"></label></div>
-      <div class="row"><label for="f-prod">Product<select id="f-prod" name="product"><option>Black pepper, whole (grade to specification)</option><option>Green cardamom 7–8 mm, deep green</option><option>Both</option></select></label><label for="f-qty">Quantity<input id="f-qty" name="qty" placeholder="e.g. 1 × 20′ FCL"></label></div>
-      <label for="f-msg">Destination &amp; notes<textarea id="f-msg" name="msg" rows="3" placeholder="Port, grade, packing, delivery window"></textarea></label>
+      <div class="row"><label for="f-type">Request<select id="f-type" name="request"><option>Quote</option><option>Sample</option></select></label><label for="f-prod">Product<select id="f-prod" name="product"><option>Black pepper, whole (grade to specification)</option><option>Green cardamom 7–8 mm, deep green</option><option>Both</option></select></label></div>
+      <div class="row"><label for="f-qty">Quantity<input id="f-qty" name="qty" placeholder="e.g. 1 × 20′ FCL, or 1 kg sample"></label><label for="f-port">Destination port<input id="f-port" name="port" placeholder="e.g. Jebel Ali"></label></div>
+      <label for="f-msg">Notes<textarea id="f-msg" name="msg" rows="3" placeholder="Grade, packing, delivery window"></textarea></label>
       <button class="btn" type="submit">Send enquiry</button>
       <p id="quote-status" class="note" role="status" aria-live="polite"></p>
     </form>
@@ -261,6 +286,10 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('[data-type]').forEach(a => a.addEventListener('click', () => { document.getElementById('f-type').value = a.dataset.type; }));
+const progress = document.getElementById('progress');
+const setProgress = () => { const h = document.documentElement.scrollHeight - innerHeight; progress.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`; };
+addEventListener('scroll', setProgress, { passive: true }); setProgress();
 const lite = matchMedia('(pointer: coarse)').matches || (navigator.deviceMemory || 8) <= 4; // phones / low-memory: lighter 3D tier
 
 document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => {
@@ -275,7 +304,7 @@ document.getElementById('quote').addEventListener('submit', async e => {
   btn.disabled = true; btn.textContent = 'Sending…'; status.textContent = '';
   try {
     const data = Object.fromEntries(f);
-    Object.assign(data, { _subject: `Website enquiry: ${data.product} (${data.name})`, _replyto: data.email, _template: 'table', _captcha: 'false' });
+    Object.assign(data, { _subject: `Website ${data.request.toLowerCase()} request: ${data.product} (${data.name})`, _replyto: data.email, _template: 'table', _captcha: 'false' });
     const res = await fetch(`https://formsubmit.co/ajax/${form.dataset.email}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
     const out = await res.json().catch(() => ({}));
     if (!res.ok || String(out.success) !== 'true') throw new Error(out.message || res.status);
@@ -284,7 +313,7 @@ document.getElementById('quote').addEventListener('submit', async e => {
   } catch {
     btn.disabled = false; btn.textContent = 'Send enquiry';
     status.textContent = 'Could not send from this page, so your email app is opening with the enquiry filled in.';
-    const body = `Name: ${f.get('name')}\nCompany: ${f.get('company')}\nEmail: ${f.get('email')}\nPhone: ${f.get('phone')}\nProduct: ${f.get('product')}\nQuantity: ${f.get('qty')}\n\n${f.get('msg')}`;
+    const body = `Request: ${f.get('request')}\nName: ${f.get('name')}\nCompany: ${f.get('company')}\nEmail: ${f.get('email')}\nPhone: ${f.get('phone')}\nProduct: ${f.get('product')}\nQuantity: ${f.get('qty')}\nDestination port: ${f.get('port')}\n\n${f.get('msg')}`;
     location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Enquiry: ' + f.get('product'))}&body=${encodeURIComponent(body)}`;
   }
 });
@@ -294,7 +323,7 @@ const stages = [...document.querySelectorAll('.stage')];
 const rail = document.getElementById('rail'), scrim = document.getElementById('scrim');
 stages.forEach((s, i) => {
   const li = document.createElement('li'), a = document.createElement('a');
-  a.href = '#'; a.innerHTML = `<span>${s.dataset.name}</span>${String(i).padStart(2, '0')}`;
+  a.href = '#'; a.innerHTML = `<span>${s.dataset.name}</span>`;
   a.onclick = ev => { ev.preventDefault(); scrollTo({ top: s.offsetTop, behavior: reduce ? 'auto' : 'smooth' }); };
   li.appendChild(a); rail.appendChild(li);
 });
@@ -448,7 +477,7 @@ async function init() {
   for (const m of [rainPep, rainPod, reflPep, reflPod]) m.frustumCulled = false;
   rainPep.castShadow = rainPod.castShadow = !lite; Z.rain.add(rainPep, rainPod); mirror.add(reflPep, reflPod); mirror.visible = !lite;
   const pieces = [], restQ = [], CAP = PR + KR;
-  const placeXZ = P => { let a, r; do { a = rand() * 6.28; r = Math.sqrt(rand()) * SR; } while (Math.sin(a) * r > .07); P.x = Math.cos(a) * r; P.z = Math.sin(a) * r; }; // keep clear of the lens
+  const placeXZ = P => { let a, r; do { a = rand() * 6.28; r = Math.sqrt(rand()) * SR; } while (Math.sin(a) * r > .07 || (innerWidth >= 760 && Math.cos(a) * r < -.03)); P.x = Math.cos(a) * r; P.z = Math.sin(a) * r; }; // keep clear of the lens
   const fallFromTop = P => { placeXZ(P); P.y = .3 + rand() * .35; P.vx = P.vz = 0; P.vy = -.02 - rand() * .03; P.st = 'fall'; P.tv = 0;
     P.ax = V(rand() - .5, rand() - .5, rand() - .5).normalize(); P.spin = (rand() - .5) * 2; P.q = new T.Quaternion().setFromEuler(_e.set(rand() * 6, rand() * 6, rand() * 6)); };
   const settle = P => { P.st = 'rest'; P.vy = 0; P.y = P.pod ? .0037 * P.sc : .0024 * P.sc;
@@ -466,8 +495,14 @@ async function init() {
   // While it is close, a high-detail copy stands in for its low-poly instance.
   const hiPep = shadow(new T.Mesh(pepperGeo, pepperMat), false, false), hiPod = makePod(); hiPod.traverse(o => o.castShadow = false);
   hiPep.visible = hiPod.visible = false; Z.rain.add(hiPep, hiPod);
-  const show = { phase: 'idle', t0: 0, wait: 2.5, dr: null, from: V(0, 0, 0) }, _dir = V(0, 0, 0), _tgt = V(0, 0, 0);
-  let focusNow = 1;
+  const show = { phase: 'idle', t0: 0, wait: 3, dr: null, from: V(0, 0, 0), force: false }, _dir = V(0, 0, 0), _tgt = V(0, 0, 0);
+  let focusNow = 1, cardState = '';
+  const inspect = document.getElementById('inspect');
+  const CARDS = {
+    idle: '<small>Inspection</small><b>Tap the falling spices</b><p>Click or tap anywhere on the scene to pull a peppercorn or a cardamom pod in for a closer look.</p>',
+    pod: '<small>Inspecting</small><b>Green cardamom</b><dl><dt>Grade</dt><dd>7–8 mm</dd><dt>Colour</dt><dd>Deep green</dd><dt>Moisture</dt><dd>≤ 10 %</dd><dt>Cured</dt><dd>45–50 °C</dd></dl>',
+    pep: '<small>Inspecting</small><b>Black pepper, whole</b><dl><dt>Process</dt><dd>Sun-dried, cleaned</dd><dt>Grade</dt><dd>To your specification</dd><dt>Moisture</dt><dd>≤ 12 % typical</dd></dl>' };
+  addEventListener('click', e => { if (cur < .3 && show.phase === 'idle' && !(e.target instanceof Element && e.target.closest('a,button,input,select,textarea,label,.copy,#inspect,header'))) show.force = true; });
 
   // ---------- port: container being stuffed (x-ray while loading), yard stacks ----------
   const PORT = V(60, 0, 0), CL = 6.06, CH = 2.59, CW = 2.44;
@@ -545,8 +580,7 @@ async function init() {
           col += mix(col / tot, sc, smoothstep(r - .5, r + .5, ss)); tot += 1.; r += 1.15 / r;
         }
         col /= tot;
-        vec2 q = vUv - .5; col *= 1. - dot(q, q) * .35;
-        col *= 1. + (fract(sin(dot(vUv + fract(time), vec2(12.9898, 78.233))) * 43758.5453) - .5) * .03;
+        vec2 q = vUv - .5; col *= 1. - dot(q, q) * .12;
         gl_FragColor = vec4(col, 1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -561,10 +595,9 @@ async function init() {
     [0, 0xeceae4, 0xdedcd5, 0xfff6ea, 3, 1, .06, .35, 16], [.45, 0xeceae4, 0xdedcd5, 0xfff6ea, 3, 1, .06, .35, 14],
     [1, 0xe6ebef, 0xa3c0da, 0xfff6ea, 3.3, 1, .02, 7, 4], [2.4, 0xe2e9f0, 0x9dbcd8, 0xfff6ea, 3.3, 1.05, .012, 16, 2]];
   const cA = new T.Color(), cB = new T.Color(), camLook = V(0, 0, 0);
-  let target = 0, cur = 0, W = 1, H = 1, mobile = false, mx = 0, my = 0, extent = 0;
+  let target = 0, cur = 0, W = 1, H = 1, mobile = false, extent = 0;
   const read = () => { target = scrollY / innerHeight; };
   addEventListener('scroll', read, { passive: true });
-  addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; } });
   const QUALITY = lite ? [[1.25, 0], [1, 0], [.8, 0]] : [[1.5, 10], [1.25, 8], [1, 6], [.8, 0]]; let qi = 0; // [max pixel ratio, max blur px]
   function resize() { W = innerWidth; H = innerHeight; mobile = W < 760; R.setPixelRatio(Math.min(devicePixelRatio, QUALITY[qi][0])); R.setSize(W, H, false);
     const pr = R.getPixelRatio(); rt.setSize(W * pr, H * pr); post.uniforms.texel.value.set(1 / (W * pr), 1 / (H * pr)); post.uniforms.maxBlur.value = QUALITY[qi][1] * (mobile ? .6 : 1);
@@ -575,8 +608,8 @@ async function init() {
     const i = Math.min(Math.floor(t), K.length - 2), k = i === 0 ? ease(range(t, .42, .58)) : ease(clamp(t - i)), a = K[i], b = K[i + 1]; // glass → port is a quick cut, hidden by the fade below
     camera.position.lerpVectors(a[0], b[0], k); camLook.lerpVectors(a[1], b[1], k);
     const d = camera.position.distanceTo(camLook);
-    camera.position.x += mx * .02 * d; camera.position.y -= my * .012 * d; camera.lookAt(camLook);
-    if (mobile) camera.setViewOffset(W, H, 0, H * .28, W, H); else camera.setViewOffset(W, H, -W * .16, 0, W, H);
+    camera.lookAt(camLook);
+    if (mobile) camera.setViewOffset(W, H, 0, H * .28, W, H); else camera.setViewOffset(W, H, -W * .22, 0, W, H);
     Z.rain.visible = t < .6; Z.port.visible = t > .4;
 
     let s = 0; while (s < ATM.length - 2 && t > ATM[s + 1][0]) s++;
@@ -591,13 +624,13 @@ async function init() {
     if (Z.rain.visible) { // slow-motion rain with bounces on the glass
       const step = Math.min(dt, .05);
       // showcase timing: out 3.2 s, hold 3.6 s, back 3.2 s, then a random pause; only while the hero view is on screen
-      if (show.phase === 'idle' && t < .3 && time - show.t0 > show.wait) {
+      if (show.phase === 'idle' && t < .3 && (show.force || time - show.t0 > show.wait)) { show.force = false;
         const wantPod = rand() < .5, cands = pieces.filter(P => P.st === 'fall' && P.pod === wantPod && P.y > .05 && P.y < .14 && P.z > -.08 && P.z < .05 && Math.abs(P.x) < .06);
         if (cands.length) { show.dr = cands[Math.floor(rand() * cands.length)]; show.from.set(show.dr.x, show.dr.y, show.dr.z); show.phase = 'move'; show.t0 = time; }
       }
       let sk = 0, sp = null;
       if (show.phase === 'move') { const e = time - show.t0;
-        if (e > 10 || t > .4) { show.phase = 'idle'; show.t0 = time; show.wait = 2 + rand() * 3; show.dr = null; }
+        if (e > 10 || t > .4) { show.phase = 'idle'; show.t0 = time; show.wait = 6 + rand() * 4; show.dr = null; }
         else { sk = e < 3.2 ? ease(e / 3.2) : e < 6.8 ? 1 : 1 - ease((e - 6.8) / 3.2);
           camera.getWorldDirection(_dir); _tgt.copy(camera.position).addScaledVector(_dir, show.dr.pod ? .075 : .028);
           sp = show.dr; } }
@@ -623,10 +656,13 @@ async function init() {
         (P.pod ? rainPod : rainPep).setMatrixAt(counts[+P.pod]++, _m);
       }
       if (!sp) hiPep.visible = hiPod.visible = false;
+      const cs = t > .3 ? 'off' : sp ? (sp.pod ? 'pod' : 'pep') : 'idle';
+      if (cs !== cardState) { cardState = cs; inspect.classList.toggle('off', cs === 'off'); if (cs !== 'off') inspect.innerHTML = CARDS[cs]; inspect.classList.toggle('idle', cs === 'idle'); }
       focusNow = sp ? camera.position.distanceTo(_p.lerpVectors(show.from, _tgt, sk)) : focusNow + (d - focusNow) * (1 - Math.exp(-dt * 4)); // lens locks onto the showcased piece, then eases back
       if (t < .5) post.uniforms.focus.value = lerp(focusNow, d, range(t, .1, .5));
       rainPep.instanceMatrix.needsUpdate = rainPod.instanceMatrix.needsUpdate = true;
     }
+    if (!Z.rain.visible && cardState !== 'off') { cardState = 'off'; inspect.classList.add('off'); }
     if (Z.port.visible) {
       for (const o of sacks) { const u = range(t, .6 + o.i * .03, .72 + o.i * .03); // each sack leaves the pallet and is set down in place
         if (u <= 0) { o.s.position.copy(o.from); o.s.rotation.set(0, o.yaw, 0); }
@@ -634,7 +670,7 @@ async function init() {
       const shut = ease(range(t, 1.45, 1.85)); for (const D of doors) D.pivot.rotation.y = D.side * lerp(-1.78, 0, shut);
       const xr = ease(range(t, .35, .6)) * (1 - ease(range(t, 1.75, 1.98)));
       for (const m of skins) { m.opacity = 1 - xr * .8; m.depthWrite = xr < .02; }
-      decalMat.opacity = 1 - xr * .75; edges.material.opacity = xr * .9;
+      decalMat.opacity = 1 - xr * .75; edges.material.opacity = xr * .4;
     }
   }
 
@@ -680,6 +716,12 @@ async function init() {
   const sPep = shadow(new T.Mesh(pepperGeo, pepperMat)); sPep.scale.setScalar(2.25); sPep.position.set(-9.75, 2.2, -.6); s2.add(sPep); // spans the 8–12.5 mm marks
   const sPod = makePod(); sPod.scale.setScalar(7.2); sPod.position.set(6.5, 3.75, -.6); s2.add(sPod); // lying on its side: 7.5 mm across, about 12.5 mm long
   cam2.position.set(0, 26, 38); cam2.lookAt(0, 0, 1);
+  const ringMat = M({ color: 0xb8892b, metalness: .75, roughness: .32 }), sieveOut = document.getElementById('sieve-out');
+  const ring = new T.Mesh(new T.TorusGeometry(1, .05, 16, 72), ringMat); ring.rotation.x = Math.PI / 2; sPod.add(ring);
+  function setSieve(mm) { const inner = mm / 2 / 7.2, passes = mm > 7.5; ring.scale.setScalar(inner + .05); ring.position.y = passes ? 0 : 1.12;
+    sieveOut.textContent = passes ? `The 7.5 mm capsule passes through the ${mm} mm sieve.` : `The 7.5 mm capsule is retained on the ${mm} mm sieve.`;
+    document.querySelectorAll('[data-sieve]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.sieve === mm)); }
+  document.querySelectorAll('[data-sieve]').forEach(b => b.addEventListener('click', () => setSieve(+b.dataset.sieve))); setSieve(8);
   let rotY = 0, vel = 0, dragging = false, lastX = 0, visible2 = false, idle = 0; // rotY = π/2: capsule width across the ruler
   sc.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; sc.setPointerCapture(e.pointerId); });
   sc.addEventListener('pointermove', e => { if (!dragging) return; const dx = e.clientX - lastX; lastX = e.clientX; rotY += dx * .012; vel = dx * .012 * 60; });
