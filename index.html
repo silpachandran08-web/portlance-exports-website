@@ -57,7 +57,9 @@ header nav a:hover{color:var(--ink)}
 header nav a.cta{color:var(--chalk);background:var(--ink);padding:12px 16px;border-radius:999px}
 
 .stage{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;padding:120px var(--gut) 80px}
-.copy{max-width:32rem;transition:opacity .9s ease,transform .9s ease}
+.copy{max-width:34rem;transition:opacity .9s ease,transform .9s ease;position:relative;padding:34px 36px;border-radius:22px;
+  background:rgba(246,245,240,.8);-webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15);
+  border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 24px 60px -24px rgba(30,42,36,.22)} /* frosted panel: text always sits on a calm surface */
 .copy:not(.in){opacity:0;transform:translateY(22px)}
 .kicker{display:flex;align-items:center;gap:12px;font:500 .7rem/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);transition:color .4s}
 .kicker::after{content:"";width:40px;height:1px;background:var(--saffron)}
