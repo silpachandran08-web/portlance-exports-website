@@ -165,33 +165,23 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
       <p>Portlance Exports supplies whole black pepper and 7–8 mm deep green cardamom to importers and wholesalers worldwide, graded, packed and sealed at origin.</p>
       <dl class="spec"><dt>Black pepper</dt><dd>Whole · sun-dried · grade to order</dd><dt>Green cardamom</dt><dd>7–8 mm · deep green</dd></dl>
       <div class="actions"><a class="btn" href="#contact">Request a quote</a><a class="link" href="#products">View specifications →</a></div>
-      <p class="sr">Scene: whole black peppercorns and green cardamom capsules falling in slow motion against a light studio backdrop.</p>
+      <p class="sr">Scene: whole black peppercorns and green cardamom capsules falling in slow motion onto a glass floor, bouncing and scattering.</p>
     </div>
   </section>
 
-  <section class="stage" id="journey" data-name="Pack">
+  <section class="stage" id="journey" data-name="Load">
     <div class="copy">
-      <div class="kicker">01 / 03 · Packed at origin</div>
-      <h2>Cleaned, graded, <em>packed at origin.</em></h2>
-      <p>Every lot is cleaned, graded and tested, then packed to your specification before it leaves us.</p>
-      <dl class="spec"><dt>Black pepper</dt><dd>25 / 50 kg jute or PP bags</dd><dt>Green cardamom</dt><dd>10 / 25 kg lined cartons or bags</dd><dt>Testing</dt><dd>Moisture · colour · purity</dd></dl>
-      <p class="sr">Scene: the falling spices gather into an open jute sack, which fills up.</p>
-    </div>
-  </section>
-
-  <section class="stage" data-name="Load">
-    <div class="copy">
-      <div class="kicker">02 / 03 · Loaded &amp; sealed</div>
-      <h2>Loaded and <em>sealed at origin.</em></h2>
-      <p>We stuff and seal the container at our end and prepare the export documents, so your shipment arrives exactly as it left.</p>
-      <dl class="spec"><dt>Shipments</dt><dd>20′ / 40′ FCL · LCL</dd><dt>Documents</dt><dd>Phyto · Origin · Quality</dd><dt>Seal</dt><dd>Applied at origin</dd></dl>
+      <div class="kicker">01 / 02 · Packed, loaded &amp; sealed</div>
+      <h2>Packed, loaded, <em>sealed at origin.</em></h2>
+      <p>Every lot is cleaned, graded and tested, packed to your specification, then stuffed and sealed into the container at our end with the export documents ready.</p>
+      <dl class="spec"><dt>Black pepper</dt><dd>25 / 50 kg jute or PP bags</dd><dt>Green cardamom</dt><dd>10 / 25 kg lined cartons or bags</dd><dt>Shipments</dt><dd>20′ / 40′ FCL · LCL</dd><dt>Documents</dt><dd>Phyto · Origin · Quality</dd></dl>
       <p class="sr">Scene: jute sacks are lowered into a shipping container shown in see-through mode, then the doors close.</p>
     </div>
   </section>
 
   <section class="stage" data-name="Ship">
     <div class="copy">
-      <div class="kicker">03 / 03 · Delivered</div>
+      <div class="kicker">02 / 02 · Delivered</div>
       <h2>One partner <em>for both spices.</em></h2>
       <p>Black pepper and green cardamom from one exporter: consistent lots, clear specifications and samples before you contract.</p>
       <dl class="spec"><dt>Terms</dt><dd>FOB · CFR · CIF</dd><dt>Samples</dt><dd>Before contract</dd></dl>
@@ -416,12 +406,16 @@ async function init() {
     panel(new T.Color(6, 5.6, 5), -6, 13, 6, 6, .2, 6); panel(new T.Color(.45, .38, .28), 0, -14, 0, 30, .2, 30);
     scene.environment = new T.PMREMGenerator(R).fromScene(env, .04).texture; }
 
-  // ---------- ground: seamless light studio floor for the rain; concrete quay at the port ----------
-  const studio = shadow(new T.Mesh(new T.CircleGeometry(30, 64), M({ map: tex(floorC, 14, 14), roughness: .9 })), false); studio.rotation.x = -Math.PI / 2; Z.rain.add(studio);
+  // ---------- ground: glass floor for the rain; concrete quay at the port ----------
+  // glass floor: a mirrored copy of the spices below y = 0 seen through a clear, slightly tinted glass sheet, plus soft contact shadows
+  const glass = new T.Mesh(new T.CircleGeometry(8, 96), new T.MeshPhysicalMaterial({ color: 0xf1f4f4, transparent: true, opacity: .62, roughness: .04, metalness: 0, clearcoat: 1, clearcoatRoughness: .03, depthWrite: false }));
+  glass.rotation.x = -Math.PI / 2; glass.renderOrder = 1; Z.rain.add(glass);
+  const contact = new T.Mesh(new T.CircleGeometry(8, 96), new T.ShadowMaterial({ opacity: .22, depthWrite: false })); contact.rotation.x = -Math.PI / 2; contact.position.y = .0002; contact.receiveShadow = true; contact.renderOrder = 2; Z.rain.add(contact);
+  const mirror = new T.Group(); mirror.scale.y = -1; Z.rain.add(mirror); // reflection: y → -y
   const concMat = M({ map: tex(concC, 12, 14), bumpMap: tex(concC, 12, 14, false), bumpScale: .08, roughness: .9 });
   const quay = shadow(new T.Mesh(new T.PlaneGeometry(60, 70), concMat), false); quay.rotation.x = -Math.PI / 2; quay.position.set(72, .006, 0); Z.port.add(quay);
 
-  // ---------- product specimens (shared by the rain, the heap and the spec bench) ----------
+  // ---------- product specimens (shared by the rain, the showcase and the spec bench) ----------
   const vein = (u, v) => Math.pow(Math.abs(Math.sin((u + .008 * Math.sin(v * 11 + u * 37) + .004 * Math.sin(v * 29)) * Math.PI * 30)), 30) * (.55 + .45 * noise2p(u * 30, v * 6, 30, 6)); // thin pale lengthwise veins
   const heroC = paint(1024, 512, (u, v) => {
     const lobe = .5 + .5 * Math.cos(3 * (Math.PI - u * Math.PI * 2)), n = fbm2(u, v, 18, 5, 4), speck = noise2p(u * 256, v * 128, 256, 128);
@@ -441,34 +435,33 @@ async function init() {
     const beak = shadow(new T.Mesh(new T.ConeGeometry(.03, .05, 16), tipMat)); beak.position.set(.05, 1.01, 0); g.add(beak); return g; }
   await breathe();
 
-  // ---------- hero: true-scale slow-motion rain of peppercorns (≈5 mm) and cardamom capsules (≈12 × 7.5 mm) pouring into a jute sack ----------
-  const NP = lite ? 260 : 560, NK = lite ? 110 : 230, TOP = 2.7, COL = .22; // column radius above the sack mouth
-  const rainPep = new T.InstancedMesh(peppercorn(lite ? 40 : 56, lite ? 30 : 42, .11), pepperMat, NP);
-  const rainPod = new T.InstancedMesh(podGeo(lite ? 36 : 64, lite ? 24 : 40, true), heroMat, NK);
-  rainPep.frustumCulled = rainPod.frustumCulled = false; Z.rain.add(rainPep, rainPod);
-  const drops = [];
-  const spawn = (d, y) => { let a, r; do { a = rand() * 6.28; r = Math.sqrt(rand()) * COL; } while (Math.sin(a) * r > .09); d.x = Math.cos(a) * r; d.z = Math.sin(a) * r; d.y = y; d.vy = .12 + rand() * .1; // keep the stream clear of the lens
-    d.ax = V(rand() - .5, rand() - .5, rand() - .5).normalize(); d.spin = (rand() - .5) * 2; d.q = new T.Quaternion().setFromEuler(_e.set(rand() * 6, rand() * 6, rand() * 6)); d.sc = .9 + rand() * .2; };
-  for (let i = 0; i < NP + NK; i++) { const d = { pod: i >= NP }; spawn(d, .9 + rand() * (TOP - .9)); drops.push(d); }
-  // jute sack: fine weave (≈2.5 mm threads), stencil as a separate curved decal, rolled rim
-  const prof = [[0, 0], [.42, 0], [.5, .06], [.56, .3], [.56, .62], [.52, .86], [.5, .92], [.53, .97], [.58, 1]].map(([r, y]) => new T.Vector2(r, y));
-  const sack = shadow(new T.Mesh(new T.LatheGeometry(prof, 96), M({ map: tex(juteC, 12, 4), bumpMap: tex(juteC, 12, 4, false), bumpScale: .3, roughness: 1, side: T.DoubleSide }))); Z.rain.add(sack);
-  { const c = document.createElement('canvas'); c.width = 1024; c.height = 256; const g = c.getContext('2d'); g.fillStyle = 'rgba(32,22,16,.8)'; g.textAlign = 'center';
-    g.font = '700 64px "Courier New",monospace'; g.fillText('PORTLANCE EXPORTS', 512, 110); g.font = '700 38px "Courier New",monospace'; g.fillText('PRODUCT OF INDIA · NET WT 50 KG', 512, 180);
-    const t = new T.CanvasTexture(c); t.colorSpace = T.SRGBColorSpace; t.anisotropy = ANISO;
-    const decal = new T.Mesh(new T.CylinderGeometry(.562, .562, .2, 48, 1, true, -.6, 1.2), new T.MeshStandardMaterial({ map: t, transparent: true, roughness: 1, polygonOffset: true, polygonOffsetFactor: -2 }));
-    decal.position.y = .48; Z.rain.add(decal); }
-  // the heap inside: thousands of tiny peppercorns and capsules painted into a texture, on a gently domed disc
-  const heapC = document.createElement('canvas'); heapC.width = heapC.height = 1024; { const g = heapC.getContext('2d'); g.fillStyle = '#2a2016'; g.fillRect(0, 0, 1024, 1024);
-    for (let i = 0; i < 16000; i++) { const x = rand() * 1024, y = rand() * 1024;
-      if (rand() < .62) { const r = 2.6 + rand() * .8, gr = g.createRadialGradient(x - r * .35, y - r * .35, r * .2, x, y, r); gr.addColorStop(0, '#6a5444'); gr.addColorStop(1, '#1a120d'); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.3); g.fill(); }
-      else { g.save(); g.translate(x, y); g.rotate(rand() * 6.3); const gr = g.createLinearGradient(0, -4, 0, 4); gr.addColorStop(0, '#7aa046'); gr.addColorStop(1, '#2f5418'); g.fillStyle = gr; g.beginPath(); g.ellipse(0, 0, 6.5, 4.2, 0, 0, 6.3); g.fill(); g.restore(); } } }
-  const heapGeo = new T.CircleGeometry(.5, 64); { const p = heapGeo.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, .06 * (1 - (x * x + y * y) / .25)); } heapGeo.computeVertexNormals(); }
-  const heap = shadow(new T.Mesh(heapGeo, M({ map: tex(heapC), bumpMap: tex(heapC, 1, 1, false), bumpScale: .6, roughness: .75 })), false, true); heap.rotation.x = -Math.PI / 2; Z.rain.add(heap);
+  // ---------- hero: true-scale slow-motion rain of peppercorns (≈5 mm) and cardamom pods (≈14 × 7.5 mm) onto a glass floor ----------
+  // Each piece falls under slow-motion gravity, hits the glass, bounces a few times with damping, slides and settles
+  // (pods roll onto their side). The oldest settled pieces quietly shrink away and fall again, so the floor stays tidy.
+  const PF = lite ? 80 : 160, PR = lite ? 170 : 340, KF = lite ? 35 : 70, KR = lite ? 60 : 120, G = .045, SR = .17; // falling / resting counts, gravity, spread radius
+  const pepGeoR = peppercorn(lite ? 28 : 36, lite ? 20 : 26, .12), podGeoR = podGeo(lite ? 32 : 40, lite ? 22 : 28, true);
+  const rainPep = new T.InstancedMesh(pepGeoR, pepperMat, PF + PR), rainPod = new T.InstancedMesh(podGeoR, heroMat, KF + KR);
+  const reflPep = new T.InstancedMesh(pepGeoR, pepperMat, PF + PR), reflPod = new T.InstancedMesh(podGeoR, heroMat, KF + KR);
+  reflPep.instanceMatrix = rainPep.instanceMatrix; reflPod.instanceMatrix = rainPod.instanceMatrix; // the reflection shares the live transforms
+  for (const m of [rainPep, rainPod, reflPep, reflPod]) m.frustumCulled = false;
+  rainPep.castShadow = rainPod.castShadow = !lite; Z.rain.add(rainPep, rainPod); mirror.add(reflPep, reflPod); mirror.visible = !lite;
+  const pieces = [], restQ = [], CAP = PR + KR;
+  const placeXZ = P => { let a, r; do { a = rand() * 6.28; r = Math.sqrt(rand()) * SR; } while (Math.sin(a) * r > .07); P.x = Math.cos(a) * r; P.z = Math.sin(a) * r; }; // keep clear of the lens
+  const fallFromTop = P => { placeXZ(P); P.y = .3 + rand() * .35; P.vx = P.vz = 0; P.vy = -.02 - rand() * .03; P.st = 'fall'; P.tv = 0;
+    P.ax = V(rand() - .5, rand() - .5, rand() - .5).normalize(); P.spin = (rand() - .5) * 2; P.q = new T.Quaternion().setFromEuler(_e.set(rand() * 6, rand() * 6, rand() * 6)); };
+  const settle = P => { P.st = 'rest'; P.vy = 0; P.y = P.pod ? .0037 * P.sc : .0024 * P.sc;
+    P.qr = P.pod ? new T.Quaternion().setFromEuler(new T.Euler(0, rand() * 6.28, Math.PI / 2, 'YXZ')) : P.q.clone(); restQ.push(P);
+    if (restQ.length > CAP) { const old = restQ.shift(); old.st = 'vanish'; old.tv = 0; } };
+  for (const [pod, nF, nR] of [[false, PF, PR], [true, KF, KR]]) for (let i = 0; i < nF + nR; i++) {
+    const P = { pod, k: i, sc: .9 + rand() * .2 }; fallFromTop(P);
+    if (i >= nF) { placeXZ(P); P.x *= 1.25; P.z *= 1.25; settle(P); P.q.copy(P.qr); P.vx = P.vz = 0; }
+    else P.y = .015 + rand() * .6; // spread over the full height so rain is visible from the first frame
+    pieces.push(P); }
+  for (let i = restQ.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [restQ[i], restQ[j]] = [restQ[j], restQ[i]]; } // mixed ages
   await breathe();
 
-  // showcase: a random falling piece (peppercorn or capsule) is drawn toward the lens, turns, and returns to the rain.
-  // While it is close, a high-detail copy stands in for its low-poly rain instance.
+  // showcase: a random falling piece (peppercorn or pod) is drawn toward the lens, turns, and returns to the rain.
+  // While it is close, a high-detail copy stands in for its low-poly instance.
   const hiPep = shadow(new T.Mesh(pepperGeo, pepperMat), false, false), hiPod = makePod(); hiPod.traverse(o => o.castShadow = false);
   hiPep.visible = hiPod.visible = false; Z.rain.add(hiPep, hiPod);
   const show = { phase: 'idle', t0: 0, wait: 2.5, dr: null, from: V(0, 0, 0) }, _dir = V(0, 0, 0), _tgt = V(0, 0, 0);
@@ -561,10 +554,10 @@ async function init() {
   quad.frustumCulled = false; postScene.add(quad);
 
   // ---------- timeline: one camera keyframe per section ----------
-  const K = [[V(.03, 1.56, .2), V(0, 1.54, 0)], [V(.75, 1.55, 1.85), V(0, .7, 0)], [V(67.8, 2.2, 5.6), V(62.4, 1.2, .5)], [V(71, 7.5, 14), V(61, .6, -2.5)]];
+  const K = [[V(0, .052, .23), V(0, .036, 0)], [V(67.8, 2.2, 5.6), V(62.4, 1.2, .5)], [V(71, 7.5, 14), V(61, .6, -2.5)]];
   const ATM = [ // t, horizon, sky top, sun colour, sun intensity, sky fill, fog density, shadow extent, lens aperture
-    [0, 0xeceae4, 0xdedcd5, 0xfff6ea, 3, 1, .06, 1.2, 22], [1, 0xeceae4, 0xdedcd5, 0xfff6ea, 3.2, 1, .06, 2, 7],
-    [2, 0xe6ebef, 0xa3c0da, 0xfff6ea, 3.3, 1, .02, 7, 4], [3.4, 0xe2e9f0, 0x9dbcd8, 0xfff6ea, 3.3, 1.05, .012, 16, 2]];
+    [0, 0xeceae4, 0xdedcd5, 0xfff6ea, 3, 1, .06, .35, 16], [.45, 0xeceae4, 0xdedcd5, 0xfff6ea, 3, 1, .06, .35, 14],
+    [1, 0xe6ebef, 0xa3c0da, 0xfff6ea, 3.3, 1, .02, 7, 4], [2.4, 0xe2e9f0, 0x9dbcd8, 0xfff6ea, 3.3, 1.05, .012, 16, 2]];
   const cA = new T.Color(), cB = new T.Color(), camLook = V(0, 0, 0);
   let target = 0, cur = 0, W = 1, H = 1, mobile = false, mx = 0, my = 0, extent = 0;
   const read = () => { target = scrollY / innerHeight; };
@@ -577,12 +570,12 @@ async function init() {
   addEventListener('resize', resize); resize(); read(); cur = target;
 
   function update(t, time, dt) {
-    const i = Math.min(Math.floor(t), K.length - 2), k = ease(clamp(t - i)), a = K[i], b = K[i + 1];
+    const i = Math.min(Math.floor(t), K.length - 2), k = i === 0 ? ease(range(t, .42, .58)) : ease(clamp(t - i)), a = K[i], b = K[i + 1]; // glass → port is a quick cut, hidden by the fade below
     camera.position.lerpVectors(a[0], b[0], k); camLook.lerpVectors(a[1], b[1], k);
     const d = camera.position.distanceTo(camLook);
     camera.position.x += mx * .02 * d; camera.position.y -= my * .012 * d; camera.lookAt(camLook);
     if (mobile) camera.setViewOffset(W, H, 0, H * .28, W, H); else camera.setViewOffset(W, H, -W * .16, 0, W, H);
-    Z.rain.visible = t < 1.6; Z.port.visible = t > 1.2;
+    Z.rain.visible = t < .6; Z.port.visible = t > .4;
 
     let s = 0; while (s < ATM.length - 2 && t > ATM[s + 1][0]) s++;
     const A = ATM[s], B = ATM[s + 1], q = clamp((t - A[0]) / (B[0] - A[0]));
@@ -593,27 +586,39 @@ async function init() {
     post.uniforms.focus.value = d; post.uniforms.aperture.value = lerp(A[8], B[8], q);
     const ext = lerp(A[7], B[7], q); if (Math.abs(ext - extent) > .01) { extent = ext; Object.assign(sun.shadow.camera, { left: -ext, right: ext, top: ext, bottom: -ext, near: .5, far: ext * 6 + 14 }); sun.shadow.camera.updateProjectionMatrix(); }
 
-    if (Z.rain.visible) { // slow-motion fall into the sack; the heap rises as you scroll
-      const fill = lerp(.55, .9, ease(range(t, .2, 1.2))); heap.position.y = fill;
+    if (Z.rain.visible) { // slow-motion rain with bounces on the glass
+      const step = Math.min(dt, .05);
       // showcase timing: out 3.2 s, hold 3.6 s, back 3.2 s, then a random pause; only while the hero view is on screen
-      if (show.phase === 'idle' && t < .35 && time - show.t0 > show.wait) {
-        const wantPod = rand() < .5, cands = drops.filter(dr => dr.pod === wantPod && dr.y > 1.45 && dr.y < 1.72 && dr.z < .1 && Math.abs(dr.x) < .1);
+      if (show.phase === 'idle' && t < .3 && time - show.t0 > show.wait) {
+        const wantPod = rand() < .5, cands = pieces.filter(P => P.st === 'fall' && P.pod === wantPod && P.y > .05 && P.y < .14 && P.z > -.08 && P.z < .05 && Math.abs(P.x) < .06);
         if (cands.length) { show.dr = cands[Math.floor(rand() * cands.length)]; show.from.set(show.dr.x, show.dr.y, show.dr.z); show.phase = 'move'; show.t0 = time; }
       }
       let sk = 0, sp = null;
-      if (show.phase === 'move') { const e = time - show.t0, D = 10;
-        if (e > D || t > .5) { show.dr.y = show.from.y; show.phase = 'idle'; show.t0 = time; show.wait = 2 + rand() * 3; show.dr = null; }
+      if (show.phase === 'move') { const e = time - show.t0;
+        if (e > 10 || t > .4) { show.phase = 'idle'; show.t0 = time; show.wait = 2 + rand() * 3; show.dr = null; }
         else { sk = e < 3.2 ? ease(e / 3.2) : e < 6.8 ? 1 : 1 - ease((e - 6.8) / 3.2);
-          camera.getWorldDirection(_dir); _tgt.copy(camera.position).addScaledVector(_dir, show.dr.pod ? .075 : .026); _tgt.y += show.dr.pod ? .004 : .0015;
+          camera.getWorldDirection(_dir); _tgt.copy(camera.position).addScaledVector(_dir, show.dr.pod ? .075 : .028);
           sp = show.dr; } }
-      let ip = 0, ik = 0;
-      for (const dr of drops) {
-        if (dr === sp) { _p.lerpVectors(show.from, _tgt, sk); dr.q.premultiply(_q2.setFromAxisAngle(dr.ax, dr.spin * .3 * dt)); }
-        else { dr.y -= dr.vy * dt; if (dr.y < fill + .03) spawn(dr, TOP + rand() * .3); _p.set(dr.x, dr.y, dr.z); dr.q.premultiply(_q2.setFromAxisAngle(dr.ax, dr.spin * dt)); }
-        const sc = (dr.pod ? .0072 : .0024) * dr.sc, hide = dr === sp && sk > .02;
-        if (dr === sp) { const hi = dr.pod ? hiPod : hiPep; hi.visible = hide; hi.position.copy(_p); hi.quaternion.copy(dr.q); hi.scale.setScalar(sc); }
-        _m.compose(_p, dr.q, _s.setScalar(hide ? 1e-6 : sc));
-        if (dr.pod) rainPod.setMatrixAt(ik++, _m); else rainPep.setMatrixAt(ip++, _m);
+      const counts = [0, 0];
+      for (const P of pieces) {
+        if (P === sp) { _p.lerpVectors(show.from, _tgt, sk); P.q.premultiply(_q2.setFromAxisAngle(P.ax, P.spin * .3 * step)); }
+        else {
+          if (P.st === 'fall') {
+            P.vy -= G * step; P.x += P.vx * step; P.y += P.vy * step; P.z += P.vz * step; P.q.premultiply(_q2.setFromAxisAngle(P.ax, P.spin * step));
+            const r = P.pod ? .0042 * P.sc : .0024 * P.sc;
+            if (P.y < r) { const hit = -P.vy; P.y = r;
+              if (hit < .025) { settle(P); P.vx *= .4; P.vz *= .4; }
+              else { P.vy = hit * (P.pod ? .3 : .42); P.vx += (rand() - .5) * hit * .7; P.vz += (rand() - .5) * hit * .7; // bounce: lose energy, kick sideways, tumble
+                P.ax.set(rand() - .5, rand() - .5, rand() - .5).normalize(); P.spin = (rand() - .5) * hit * 60; } }
+          } else if (P.st === 'rest') {
+            const f = Math.exp(-5 * step); P.vx *= f; P.vz *= f; P.x += P.vx * step; P.z += P.vz * step; P.q.slerp(P.qr, 1 - Math.exp(-8 * step));
+          } else { P.tv += step; if (P.tv > .6) fallFromTop(P); }
+          _p.set(P.x, P.y, P.z);
+        }
+        const base = (P.pod ? .0072 : .0024) * P.sc, sc = P.st === 'vanish' ? base * (1 - ease(clamp(P.tv / .6))) : base, hide = P === sp && sk > .02;
+        if (P === sp) { const hi = P.pod ? hiPod : hiPep; hi.visible = hide; hi.position.copy(_p); hi.quaternion.copy(P.q); hi.scale.setScalar(sc); }
+        _m.compose(_p, P.q, _s.setScalar(hide ? 1e-6 : sc + 1e-6));
+        (P.pod ? rainPod : rainPep).setMatrixAt(counts[+P.pod]++, _m);
       }
       if (!sp) hiPep.visible = hiPod.visible = false;
       focusNow = sp ? camera.position.distanceTo(_p.lerpVectors(show.from, _tgt, sk)) : focusNow + (d - focusNow) * (1 - Math.exp(-dt * 4)); // lens locks onto the showcased piece, then eases back
@@ -621,11 +626,11 @@ async function init() {
       rainPep.instanceMatrix.needsUpdate = rainPod.instanceMatrix.needsUpdate = true;
     }
     if (Z.port.visible) {
-      for (const o of sacks) { const u = range(t, 1.6 + o.i * .03, 1.72 + o.i * .03); // each sack leaves the pallet and is set down in place
+      for (const o of sacks) { const u = range(t, .6 + o.i * .03, .72 + o.i * .03); // each sack leaves the pallet and is set down in place
         if (u <= 0) { o.s.position.copy(o.from); o.s.rotation.set(0, o.yaw, 0); }
         else { o.s.position.copy(o.to); o.s.position.y += (1 - ease(u)) * .22; o.s.rotation.set(0, Math.PI / 2 + o.yaw, 0); } }
-      const shut = ease(range(t, 2.45, 2.85)); for (const D of doors) D.pivot.rotation.y = D.side * lerp(-1.78, 0, shut);
-      const xr = ease(range(t, 1.35, 1.6)) * (1 - ease(range(t, 2.75, 2.98)));
+      const shut = ease(range(t, 1.45, 1.85)); for (const D of doors) D.pivot.rotation.y = D.side * lerp(-1.78, 0, shut);
+      const xr = ease(range(t, .35, .6)) * (1 - ease(range(t, 1.75, 1.98)));
       for (const m of skins) { m.opacity = 1 - xr * .8; m.depthWrite = xr < .02; }
       decalMat.opacity = 1 - xr * .75; edges.material.opacity = xr * .9;
     }
@@ -634,7 +639,7 @@ async function init() {
   // ---------- render loop: warm-up, pause when covered, adaptive quality ----------
   const clock = new T.Clock(), links = [...rail.querySelectorAll('a')];
   const draw = () => { R.setRenderTarget(rt); R.render(scene, camera); R.setRenderTarget(null); R.render(postScene, postCam); };
-  let warm = 0, onScreen = true, lastNow = 0, ema = 16, slowFrames = 0, railIdx = -1, railPast = -1;
+  let lastFade = -1, warm = 0, onScreen = true, lastNow = 0, ema = 16, slowFrames = 0, railIdx = -1, railPast = -1;
   new IntersectionObserver(es => { onScreen = es[0].isIntersecting; }).observe(document.getElementById('journey-wrap'));
   (function loop(now) {
     requestAnimationFrame(loop);
@@ -642,9 +647,10 @@ async function init() {
     if (!onScreen) { lastNow = now; return; } // the 3D is fully covered by the solid sections: skip all work
     const dt = Math.min(.1, (now - lastNow) / 1000 || .016); lastNow = now;
     cur = reduce ? target : cur + (target - cur) * (1 - Math.exp(-dt * 4.7));
-    const t = clamp(cur, 0, 3.4), time = clock.getElapsedTime();
+    const t = clamp(cur, 0, 2.4), time = clock.getElapsedTime();
     post.uniforms.time.value = time;
     update(t, time, reduce ? 0 : dt); draw();
+    const fade = Math.round(clamp(1 - Math.abs(t - .5) / .1) * 100) / 100; if (fade !== lastFade && (fade > 0 || lastFade > 0)) { canvas.style.transition = 'none'; canvas.style.opacity = 1 - fade; } lastFade = fade; // dip to the page colour while the camera cuts from the glass floor to the port
     if (!document.hidden && dt < .1) { ema += (dt * 1000 - ema) * .05; slowFrames = ema > 22 ? slowFrames + 1 : 0; if (slowFrames > 90 && qi < QUALITY.length - 1) { qi++; slowFrames = 0; ema = 16; resize(); } }
     const idx = Math.round(clamp(cur, 0, stages.length - 1));
     if (idx !== railIdx) { railIdx = idx; links.forEach((el, i) => el.classList.toggle('on', i === idx)); }

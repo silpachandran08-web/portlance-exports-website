@@ -5,11 +5,11 @@ Static site for portlanceexports.com (black pepper and green cardamom): `index.h
 No build step, no server code.
 
 ## How the page works
-- **Hero:** a true-scale, slow-motion rain of whole black peppercorns and 7–8 mm green cardamom
-  capsules (macro camera with depth of field). Scrolling pulls the camera back to reveal the spices
-  pouring into a Portlance jute sack that fills up.
-- **Export:** sacks are lowered into a see-through container, the doors close, then the sealed
-  container in the port yard.
+- **Hero:** a true-scale, slow-motion rain of whole black peppercorns and 7-8 mm green cardamom pods
+  falling onto a glass floor (reflections, contact shadows). Each piece bounces a few times, slides and
+  settles. Every few seconds a random falling piece is drawn toward the lens for a close-up and returns.
+- **Export (next page):** sacks are lowered into a see-through container, the doors close, then the
+  sealed container in the port yard.
 - **Spec bench:** both specimens at true relative size on a millimetre ruler (drag to turn), with
   "Add to enquiry" buttons that pre-fill the form.
 - **Performance:** only the visible zone is drawn; drawing stops while the 3D is covered; phones /
