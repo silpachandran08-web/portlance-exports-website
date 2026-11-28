@@ -18,16 +18,16 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* Layout: full-bleed 3D (slow-motion spice rain, then the export route) behind a left narrative column; spec-sheet sections on solid ground below */
 :root{
   --chalk:#F6F5F0; --stone:#E7E4DA; --ink:#1E2A24; --ink-2:#4C5A51; --mist:#8C9A8F;
   --cardamom:#4E7A2E; --pepper:#7A3B22; --saffron:#C9A227; --line:rgba(30,42,36,.14);
   --accent:var(--cardamom);
-  --display:"Fraunces",Georgia,"Times New Roman",serif;
-  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --display:"Plus Jakarta Sans","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; /* labels and spec values: same clean sans, set small */
   --gut:max(24px,6vw);
   color-scheme:light;
 }
@@ -49,7 +49,7 @@ a{color:inherit}
 header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:20px;
   padding:calc(env(safe-area-inset-top,0px) + 18px) max(24px,4vw) 18px}
 .brand{text-decoration:none;display:flex;flex-direction:column;line-height:1}
-.brand b{font:400 1.5rem/1 var(--display);letter-spacing:-.01em}
+.brand b{font:600 1.5rem/1 var(--display);letter-spacing:-.01em}
 .brand small{font:500 .6rem/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);margin-top:6px}
 header nav{display:flex;align-items:center;gap:26px}
 header nav a{font:500 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--ink-2)}
@@ -61,10 +61,10 @@ header nav a.cta{color:var(--chalk);background:var(--ink);padding:12px 16px;bord
 .copy:not(.in){opacity:0;transform:translateY(22px)}
 .kicker{display:flex;align-items:center;gap:12px;font:500 .7rem/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);transition:color .4s}
 .kicker::after{content:"";width:40px;height:1px;background:var(--saffron)}
-h1,h2{font-family:var(--display);font-weight:340;letter-spacing:-.015em;text-wrap:balance;font-variation-settings:"opsz" 120}
+h1,h2{font-family:var(--display);font-weight:600;letter-spacing:-.025em;text-wrap:balance}
 h1{font-size:clamp(2.7rem,5.4vw,4.9rem);line-height:1.02;margin:20px 0 20px}
 h2{font-size:clamp(2.3rem,4.2vw,3.7rem);line-height:1.05;margin:18px 0 16px}
-h1 em,h2 em{font-style:italic;color:var(--accent);transition:color .4s}
+h1 em,h2 em{font-style:normal;color:var(--accent)}
 .copy>p{color:var(--ink-2);font-size:1.04rem;max-width:34em}
 .spec{display:grid;grid-template-columns:auto 1fr;margin-top:26px;border-top:1px solid var(--line)}
 .spec dt,.spec dd{padding:10px 0;border-bottom:1px solid var(--line)}
@@ -95,7 +95,7 @@ h1 em,h2 em{font-style:italic;color:var(--accent);transition:color .4s}
 .viewer figcaption{font:400 .72rem/1.5 var(--mono);color:var(--ink-2);padding:12px 18px;border-top:1px solid var(--line)}
 .cards{display:grid;gap:18px}
 .card{border:1px solid var(--line);border-radius:18px;padding:24px 24px 20px;background:var(--chalk);transition:box-shadow .3s,border-color .3s}
-.card h3{font:400 1.6rem/1.15 var(--display);display:flex;align-items:center;gap:10px}
+.card h3{font:600 1.6rem/1.15 var(--display);display:flex;align-items:center;gap:10px}
 .card h3 i{width:12px;height:12px;border-radius:50%;flex:none}
 .card .spec{margin-top:14px}
 .badge{display:inline-block;font:500 .62rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--saffron);color:var(--ink);border-radius:999px;padding:6px 10px;margin-top:14px}
@@ -105,11 +105,11 @@ h1 em,h2 em{font-style:italic;color:var(--accent);transition:color .4s}
 .steps div{padding:28px 26px 0 0}
 .steps div+div{padding-left:26px;border-left:1px solid var(--line)}
 .steps i{font:500 .66rem/1 var(--mono);letter-spacing:.16em;color:var(--accent);font-style:normal}
-.steps h3{font:400 1.55rem/1.15 var(--display);margin:16px 0 10px}
+.steps h3{font:600 1.55rem/1.15 var(--display);margin:16px 0 10px}
 .steps p{color:var(--ink-2);font-size:.93rem}
 .docs{margin-top:46px;display:grid;grid-template-columns:auto 1fr;gap:10px 40px;align-items:baseline;border-top:1px solid var(--line);padding-top:24px}
 .docs span{font:500 .64rem/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
-.docs p{font:400 1.25rem/1.5 var(--display)}
+.docs p{font:600 1.25rem/1.5 var(--display)}
 .contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:80px}
 .contact .spec{margin-top:36px}
 form{display:grid;gap:24px;align-content:start}
@@ -209,7 +209,7 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
   <div class="bench">
     <figure class="viewer">
       <canvas id="spec" role="img" aria-label="A whole black peppercorn and a green cardamom capsule lying on a millimetre ruler. The cardamom capsule is about 7.5 mm across."></canvas>
-      <figcaption>Drag to turn · ruler in millimetres · peppercorn shown at a typical 4.5 mm, cardamom capsule at 7.5 mm</figcaption>
+      <figcaption>Drag to turn · ruler in millimetres · peppercorn about 4.5 mm · cardamom capsule 7.5 mm across</figcaption>
     </figure>
     <div class="cards">
       <article class="card" data-for="pepper">
@@ -360,6 +360,13 @@ async function init() {
     for (let i = 0; i < p.count; i++) { const k = p.getX(i).toFixed(4) + ',' + p.getY(i).toFixed(4) + ',' + p.getZ(i).toFixed(4); (map.get(k) || map.set(k, []).get(k)).push(i); }
     for (const ids of map.values()) if (ids.length > 1) { const s = V(0, 0, 0); ids.forEach(i => s.add(V(n.getX(i), n.getY(i), n.getZ(i)))); s.normalize(); ids.forEach(i => n.setXYZ(i, s.x, s.y, s.z)); }
     return g; }
+  function peppercorn(ws, hs) { const g = new T.SphereGeometry(1, ws, hs), p = g.attributes.position, v = V(0, 0, 0), col = [], dark = new T.Color(0x0b0806), light = new T.Color(0x4a3c33), c = new T.Color();
+    for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const n = v.clone().normalize();
+      const lump = (noise3(n.x * 1.6 + 3, n.y * 1.6, n.z * 1.6 + 9) - .5) * .12; // slightly irregular, not a perfect ball
+      let ridge = 0, a = 1, f = 3.2; for (let o = 0; o < 4; o++) { ridge += a * Math.pow(1 - Math.abs(noise3(n.x * f + 11, n.y * f + 5, n.z * f + 3) * 2 - 1), 2.2); a *= .5; f *= 2.05; }
+      ridge /= 1.875; v.copy(n).multiplyScalar(1 + lump - (1 - ridge) * .13); p.setXYZ(i, v.x, v.y, v.z);
+      c.lerpColors(dark, light, Math.pow(ridge, 1.6) * .9 + noise3(n.x * 9, n.y * 9, n.z * 9) * .1); col.push(c.r, c.g, c.b); }
+    g.setAttribute('color', new T.Float32BufferAttribute(col, 3)); return weldNormals(g); }
   function wrinkled(r, ws, hs, amp, freq) { const g = new T.SphereGeometry(r, ws, hs), p = g.attributes.position, v = V(0, 0, 0);
     for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const n = v.clone().normalize(); let s = 0, a = 1, f = freq;
       for (let o = 0; o < 4; o++) { s += a * (1 - Math.abs(noise3(n.x * f + 11, n.y * f + 5, n.z * f + 3) * 2 - 1)); a *= .5; f *= 2.1; }
@@ -405,15 +412,15 @@ async function init() {
   const heroC = paint(1024, 512, (u, v) => {
     const ridge = Math.pow(Math.abs(Math.sin(u * Math.PI * 36)), .7), lobe = .5 + .5 * Math.cos(3 * (Math.PI - u * Math.PI * 2));
     const n = fbm2(u, v, 24, 6, 4), speck = noise2p(u * 256, v * 128, 256, 128);
-    let c = mix(rgb(0x3a6420), rgb(0x6c9638), ridge * .14 + n * .5 + lobe * .2 + speck * .08);
+    let c = mix(rgb(0x4c6a26), rgb(0x8aa552), ridge * .08 + n * .55 + lobe * .18 + speck * .1);
     if (v > .82) c = mix(c, rgb(0xa49a5a), Math.pow((v - .82) / .18, 1.6) * .85);
     if (v < .07) c = mix(c, rgb(0x55552c), (1 - v / .07) * .7);
     return c; });
   await breathe();
-  const heroBump = paint(1024, 512, (u, v) => { const k = (Math.pow(Math.abs(Math.sin(u * Math.PI * 36)), .7) * .35 + fbm2(u, v, 40, 10, 3) * .65) * 255; return [k, k, k]; });
-  const heroMat = new T.MeshPhysicalMaterial({ map: tex(heroC), bumpMap: tex(heroBump, 1, 1, false), bumpScale: .003, roughness: .62, sheen: .2, sheenColor: 0xd3e6a8, sheenRoughness: .7 });
+  const heroBump = paint(1024, 512, (u, v) => { const k = (Math.pow(Math.abs(Math.sin(u * Math.PI * 36)), .7) * .18 + fbm2(u, v, 40, 10, 3) * .5 + noise2p(u * 512, v * 256, 512, 256) * .32) * 255; return [k, k, k]; });
+  const heroMat = new T.MeshPhysicalMaterial({ map: tex(heroC), bumpMap: tex(heroBump, 1, 1, false), bumpScale: .004, roughness: .78, sheen: .35, sheenColor: 0xc9d9a0, sheenRoughness: .8 });
   const heroPodGeo = podGeo(lite ? 120 : 160, lite ? 72 : 96, true);
-  const pepperMat = new T.MeshPhysicalMaterial({ color: 0x2b1f18, roughness: .55, sheen: .4, sheenColor: 0x7a5a44, sheenRoughness: .6 }), pepperGeo = wrinkled(1, 96, 72, .07, 5);
+  const pepperMat = new T.MeshPhysicalMaterial({ vertexColors: true, roughness: .72, sheen: .35, sheenColor: 0x6a5a4e, sheenRoughness: .8 }), pepperGeo = peppercorn(128, 96);
   const strawMat = M({ color: 0x8c7d48, roughness: .85 }), tipMat = M({ color: 0x4f5229, roughness: .75 });
   function makePod() { const g = new T.Group(); g.add(shadow(new T.Mesh(heroPodGeo, heroMat)));
     const stub = shadow(new T.Mesh(new T.CylinderGeometry(.045, .07, .1, 16), strawMat)); stub.position.set(.06, -1.01, 0); g.add(stub);
@@ -422,7 +429,7 @@ async function init() {
 
   // ---------- hero: true-scale slow-motion rain of peppercorns (≈5 mm) and cardamom capsules (≈12 × 7.5 mm) pouring into a jute sack ----------
   const NP = lite ? 260 : 560, NK = lite ? 110 : 230, TOP = 2.7, COL = .22; // column radius above the sack mouth
-  const rainPep = new T.InstancedMesh(wrinkled(1, lite ? 24 : 40, lite ? 18 : 30, .07, 5), pepperMat, NP);
+  const rainPep = new T.InstancedMesh(peppercorn(lite ? 36 : 64, lite ? 28 : 48), pepperMat, NP);
   const rainPod = new T.InstancedMesh(podGeo(lite ? 36 : 64, lite ? 24 : 40, true), heroMat, NK);
   rainPep.frustumCulled = rainPod.frustumCulled = false; Z.rain.add(rainPep, rainPod);
   const drops = [];
@@ -617,17 +624,17 @@ async function init() {
   Object.assign(key2.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 120 }); key2.shadow.radius = 6; s2.add(key2);
   { const rc = document.createElement('canvas'); rc.width = 2048; rc.height = 448; const g = rc.getContext('2d');
     g.fillStyle = '#f1ede3'; g.fillRect(0, 0, 2048, 448); const px = 2048 / 44; // 44 mm ruler, 2 mm margin each side
-    g.fillStyle = '#1e2a24'; g.textAlign = 'center'; g.font = '500 54px "JetBrains Mono",Menlo,monospace';
+    g.fillStyle = '#1e2a24'; g.textAlign = 'center'; g.font = '500 54px Inter,Arial,sans-serif';
     for (let mm = 0; mm <= 40; mm++) { const x = (mm + 2) * px, h = mm % 10 === 0 ? 130 : mm % 5 === 0 ? 95 : 60; g.fillRect(x - 2, 448 - h, 4, h); if (mm % 10 === 0) g.fillText(mm, x, 448 - 150); }
-    g.font = '500 40px "JetBrains Mono",Menlo,monospace'; g.textAlign = 'left'; g.fillText('mm', 2 * px + 70, 448 - 150);
+    g.font = '500 40px Inter,Arial,sans-serif'; g.textAlign = 'left'; g.fillText('mm', 2 * px + 70, 448 - 150);
     const rt2 = new T.CanvasTexture(rc); rt2.colorSpace = T.SRGBColorSpace; rt2.anisotropy = 8;
     const ruler = new T.Mesh(new T.BoxGeometry(44, .8, 9.6), [M({ color: 0xe3ded2 }), M({ color: 0xe3ded2 }), M({ map: rt2, roughness: .7 }), M({ color: 0xe3ded2 }), M({ color: 0xe3ded2 }), M({ color: 0xe3ded2 })]);
     ruler.position.set(0, -.4, 0); ruler.receiveShadow = true; s2.add(ruler); // specimens rest on the ruler; ticks along its front edge
     const floor = new T.Mesh(new T.PlaneGeometry(400, 400), new T.ShadowMaterial({ opacity: .18 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -.8; floor.receiveShadow = true; s2.add(floor); }
   const sPep = shadow(new T.Mesh(pepperGeo, pepperMat)); sPep.scale.setScalar(2.25); sPep.position.set(-9.75, 2.2, -.6); s2.add(sPep); // spans the 8–12.5 mm marks
-  const sPod = makePod(); sPod.scale.setScalar(6.25); sPod.position.set(3.75, 3.75, -.6); s2.add(sPod); // width spans the 20–27.5 mm marks (7.5 mm)
+  const sPod = makePod(); sPod.scale.setScalar(6.25); sPod.position.set(6.25, 3.75, -.6); s2.add(sPod); // lying on its side: 7.5 mm across, about 12.5 mm long
   cam2.position.set(0, 26, 38); cam2.lookAt(0, 0, 1);
-  let rotY = Math.PI / 2, vel = 0, dragging = false, lastX = 0, visible2 = false, idle = 0; // rotY = π/2: capsule width across the ruler
+  let rotY = 0, vel = 0, dragging = false, lastX = 0, visible2 = false, idle = 0; // rotY = π/2: capsule width across the ruler
   sc.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; sc.setPointerCapture(e.pointerId); });
   sc.addEventListener('pointermove', e => { if (!dragging) return; const dx = e.clientX - lastX; lastX = e.clientX; rotY += dx * .012; vel = dx * .012 * 60; });
   const stopDrag = () => { dragging = false; }; sc.addEventListener('pointerup', stopDrag); sc.addEventListener('pointercancel', stopDrag);
@@ -639,7 +646,7 @@ async function init() {
     requestAnimationFrame(loop2); if (!visible2) { last2 = now; return; }
     const dt = Math.min(.1, (now - last2) / 1000 || .016); last2 = now;
     if (dragging) idle = 0; else { idle += dt; vel *= Math.exp(-dt * 3); rotY += vel * dt; // after a moment, settle back to the measuring position
-      if (idle > 1.2) { const home = Math.PI / 2 + Math.round((rotY - Math.PI / 2) / Math.PI) * Math.PI; rotY += (home - rotY) * (1 - Math.exp(-dt * 3)); } }
+      if (idle > 1.2) { const home = Math.round(rotY / Math.PI) * Math.PI; rotY += (home - rotY) * (1 - Math.exp(-dt * 3)); } } // home = side profile, like a real pod lying on the ruler
     sPep.rotation.set(.3, rotY * .8, 0); sPod.rotation.set(0, rotY, Math.PI / 2, 'YXZ');
     R2.render(s2, cam2);
   })(0);
