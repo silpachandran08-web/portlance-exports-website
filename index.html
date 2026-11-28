@@ -20,19 +20,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Layout: full-bleed daylight 3D behind a left narrative column; a crop switch re-points scene, copy and specs; spec-sheet sections on solid ground below */
+/* Layout: full-bleed 3D (slow-motion spice rain, then the export route) behind a left narrative column; spec-sheet sections on solid ground below */
 :root{
   --chalk:#F6F5F0; --stone:#E7E4DA; --ink:#1E2A24; --ink-2:#4C5A51; --mist:#8C9A8F;
   --cardamom:#4E7A2E; --pepper:#7A3B22; --saffron:#C9A227; --line:rgba(30,42,36,.14);
-  --accent:var(--pepper);
+  --accent:var(--cardamom);
   --display:"Fraunces",Georgia,"Times New Roman",serif;
   --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   --gut:max(24px,6vw);
   color-scheme:light;
 }
-body[data-crop="cardamom"]{--accent:var(--cardamom)}
-[data-crop="pepper"] [data-only="cardamom"],[data-crop="cardamom"] [data-only="pepper"]{display:none!important}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--chalk);color:var(--ink);font:400 16px/1.65 var(--body);-webkit-font-smoothing:antialiased}
@@ -53,9 +51,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:c
 .brand{text-decoration:none;display:flex;flex-direction:column;line-height:1}
 .brand b{font:400 1.5rem/1 var(--display);letter-spacing:-.01em}
 .brand small{font:500 .6rem/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);margin-top:6px}
-.switch{display:inline-flex;background:rgba(231,228,218,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:999px;padding:4px;gap:2px}
-.switch button{font:500 .72rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;border:0;background:none;color:var(--ink-2);padding:10px 16px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s}
-.switch button[aria-selected="true"]{background:var(--ink);color:var(--chalk)}
 header nav{display:flex;align-items:center;gap:26px}
 header nav a{font:500 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--ink-2)}
 header nav a:hover{color:var(--ink)}
@@ -75,11 +70,6 @@ h1 em,h2 em{font-style:italic;color:var(--accent);transition:color .4s}
 .spec dt,.spec dd{padding:10px 0;border-bottom:1px solid var(--line)}
 .spec dt{font:500 .64rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);padding-right:26px;display:flex;align-items:center}
 .spec dd{font:400 .84rem/1.4 var(--mono);font-variant-numeric:tabular-nums}
-.pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:30px;max-width:30rem}
-.pick button{text-align:left;border:1px solid var(--line);background:rgba(246,245,240,.7);border-radius:14px;padding:14px 16px;cursor:pointer;font:inherit;color:inherit;transition:border-color .25s,background .25s}
-.pick button b{display:block;font:400 1.15rem/1.2 var(--display)}
-.pick button span{display:block;font:400 .72rem/1.5 var(--mono);color:var(--ink-2);margin-top:4px}
-.pick button[aria-pressed="true"]{border-color:var(--accent);background:var(--chalk);box-shadow:inset 0 0 0 1px var(--accent)}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:22px;margin-top:28px}
 .btn{display:inline-block;background:var(--ink);color:var(--chalk);text-decoration:none;border:0;cursor:pointer;border-radius:999px;
   font:500 .74rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:16px 22px;transition:background .2s}
@@ -105,7 +95,6 @@ h1 em,h2 em{font-style:italic;color:var(--accent);transition:color .4s}
 .viewer figcaption{font:400 .72rem/1.5 var(--mono);color:var(--ink-2);padding:12px 18px;border-top:1px solid var(--line)}
 .cards{display:grid;gap:18px}
 .card{border:1px solid var(--line);border-radius:18px;padding:24px 24px 20px;background:var(--chalk);transition:box-shadow .3s,border-color .3s}
-[data-crop="pepper"] .card[data-for="pepper"],[data-crop="cardamom"] .card[data-for="cardamom"]{border-color:var(--accent);box-shadow:0 10px 30px rgba(30,42,36,.08)}
 .card h3{font:400 1.6rem/1.15 var(--display);display:flex;align-items:center;gap:10px}
 .card h3 i{width:12px;height:12px;border-radius:50%;flex:none}
 .card .spec{margin-top:14px}
@@ -144,12 +133,10 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
   header{flex-wrap:wrap;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 10px;background:linear-gradient(rgba(246,245,240,.96),rgba(246,245,240,.85) 75%,rgba(246,245,240,0))}
   .brand small{display:none}.brand b{font-size:1.25rem}
   header nav a.cta{padding:10px 12px;font-size:.64rem}
-  .switch{order:3;width:100%}.switch button{flex:1;padding:9px 8px}
   .scrim{background:linear-gradient(0deg,rgba(246,245,240,.97) 0,rgba(246,245,240,.88) 42%,rgba(246,245,240,0) 68%),linear-gradient(180deg,rgba(246,245,240,.8) 0,rgba(246,245,240,0) 18%)}
   .stage{align-items:flex-end;padding:150px 20px 8vh}
   h2{font-size:2.1rem}
   h1{font-size:2.3rem;margin:14px 0}
-  .pick{grid-template-columns:1fr 1fr;gap:8px;margin-top:20px}.pick button{padding:10px 12px}.pick button b{font-size:1rem}
   .stage#top .copy>p{font-size:.95rem}
   .sheet{padding:76px 20px}
   #spec{height:300px}
@@ -160,129 +147,54 @@ footer{position:relative;z-index:3;background:var(--ink);color:#c9d2cb;padding:2
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.copy,#scene,#veil{transition:none}}
 </style>
 </head>
-<body data-crop="pepper">
+<body>
 <canvas id="scene" aria-hidden="true"></canvas>
 <div class="scrim" id="scrim"></div>
-<div id="veil" aria-hidden="true"></div>
 
 <header>
   <a class="brand" href="#top"><b>Portlance Exports</b><small>Export &amp; Import · Wholesale</small></a>
-  <div class="switch" role="tablist" aria-label="Choose a spice">
-    <button role="tab" id="tab-pepper" data-crop-set="pepper" aria-selected="true">Black pepper</button>
-    <button role="tab" id="tab-cardamom" data-crop-set="cardamom" aria-selected="false" tabindex="-1">Cardamom</button>
-  </div>
-  <nav><a href="#journey">The route</a><a href="#products">Specs</a><a href="#process">Process</a><a class="cta" href="#contact">Request a quote</a></nav>
+  <nav><a href="#journey">Export</a><a href="#products">Specs</a><a href="#process">Process</a><a class="cta" href="#contact">Request a quote</a></nav>
 </header>
-<ol id="rail" aria-label="Stages"></ol>
+<ol id="rail" aria-label="Sections"></ol>
 
 <main id="journey-wrap">
   <section class="stage" id="top" data-name="Intro">
     <div class="copy in">
-      <div class="kicker">Black pepper &amp; green cardamom · Export</div>
-      <h1>Two spices, <em>one careful route</em> to your container.</h1>
-      <p>Portlance Exports sources, dries, grades and ships whole spices for importers and wholesalers. Choose a spice to follow its journey from the estate to a sealed container.</p>
-      <div class="pick" role="group" aria-label="Choose a spice">
-        <button data-crop-set="pepper" aria-pressed="true"><b>Black pepper</b><span>Whole · sun-dried · grade to order</span></button>
-        <button data-crop-set="cardamom" aria-pressed="false"><b>Green cardamom</b><span>7–8 mm · deep green</span></button>
-      </div>
-      <div class="actions"><a class="btn" href="#contact">Request a quote</a><a class="link" href="#products">Compare specs →</a></div>
-      <p class="sr" data-only="pepper">Scene: a whole peppercorn on a limestone slab in front of a pepper plantation.</p>
-      <p class="sr" data-only="cardamom">Scene: a green cardamom capsule on a limestone slab in front of a cardamom forest.</p>
+      <div class="kicker">Black pepper · Green cardamom · Exporters</div>
+      <h1>Whole spices, <em>exported with care.</em></h1>
+      <p>Portlance Exports supplies whole black pepper and 7–8 mm deep green cardamom to importers and wholesalers worldwide, graded, packed and sealed at origin.</p>
+      <dl class="spec"><dt>Black pepper</dt><dd>Whole · sun-dried · grade to order</dd><dt>Green cardamom</dt><dd>7–8 mm · deep green</dd></dl>
+      <div class="actions"><a class="btn" href="#contact">Request a quote</a><a class="link" href="#products">View specifications →</a></div>
+      <p class="sr">Scene: whole black peppercorns and green cardamom capsules falling in slow motion against a light studio backdrop.</p>
     </div>
   </section>
 
-  <section class="stage" id="journey" data-name="Grow">
+  <section class="stage" id="journey" data-name="Pack">
     <div class="copy">
-      <div class="kicker">01 / 05 · Grow</div>
-      <div data-only="pepper">
-        <h2>A climber that <em>needs support.</em></h2>
-        <p>Black pepper is the fruit of <i>Piper nigrum</i>, a perennial vine native to the Western Ghats. It climbs a living support tree by its aerial roots and bears its first crop in the third year.</p>
-        <dl class="spec"><dt>Botanical name</dt><dd>Piper nigrum L.</dd><dt>Support</dt><dd>Living shade tree</dd><dt>First harvest</dt><dd>Year 3 · productive 20+ years</dd></dl>
-        <p class="sr">Scene: pepper vines spiralling up tall support trees, leaves unfolding as they climb.</p>
-      </div>
-      <div data-only="cardamom">
-        <h2>A clump of <em>leafy shoots.</em></h2>
-        <p>Green cardamom is the fruit of <i>Elettaria cardamomum</i>, a forest plant of the ginger family. From an underground rhizome it sends up tall shoots with long, glossy leaves, under 40–60 % shade.</p>
-        <dl class="spec"><dt>Botanical name</dt><dd>Elettaria cardamomum</dd><dt>Shade</dt><dd>40–60 % filtered light</dd><dt>First harvest</dt><dd>Year 2–3 · productive 10–15 years</dd></dl>
-        <p class="sr">Scene: cardamom clumps of tall leafy shoots growing under forest trees.</p>
-      </div>
+      <div class="kicker">01 / 03 · Packed at origin</div>
+      <h2>Cleaned, graded, <em>packed at origin.</em></h2>
+      <p>Every lot is cleaned, graded and tested, then packed to your specification before it leaves us.</p>
+      <dl class="spec"><dt>Black pepper</dt><dd>25 / 50 kg jute or PP bags</dd><dt>Green cardamom</dt><dd>10 / 25 kg lined cartons or bags</dd><dt>Testing</dt><dd>Moisture · colour · purity</dd></dl>
+      <p class="sr">Scene: the falling spices gather into an open jute sack, which fills up.</p>
     </div>
   </section>
 
-  <section class="stage" data-name="Fruit">
+  <section class="stage" data-name="Load">
     <div class="copy">
-      <div class="kicker">02 / 05 · Fruit</div>
-      <div data-only="pepper">
-        <h2>Green spikes, <em>ripening slowly.</em></h2>
-        <p>Flowers form on hanging spikes after the monsoon. Over six to eight months each spike fills with tightly packed berries that turn from green to red.</p>
-        <dl class="spec"><dt>Spike length</dt><dd>7–15 cm</dd><dt>Development</dt><dd>6–8 months</dd><dt>Ripening</dt><dd>Green → yellow → red</dd></dl>
-        <p class="sr">Scene: hanging spikes of berries on the vine, ripening from green to red.</p>
-      </div>
-      <div data-only="cardamom">
-        <h2>Flowers <em>at ground level.</em></h2>
-        <p>Cardamom flowers on long panicles that grow from the base of the plant and creep across the forest floor. Small white flowers give way to plump green capsules.</p>
-        <dl class="spec"><dt>Panicles</dt><dd>From the base, along the ground</dd><dt>Flower</dt><dd>White, violet-streaked lip</dd><dt>Maturity</dt><dd>≈ 120 days after flowering</dd></dl>
-        <p class="sr">Scene: flower stalks spreading over the ground from the base of the plant, setting green capsules.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="stage" data-name="Harvest">
-    <div class="copy">
-      <div class="kicker">03 / 05 · Harvest</div>
-      <div data-only="pepper">
-        <h2>Picked by hand, <em>spike by spike.</em></h2>
-        <p>Harvest starts when one or two berries on a spike turn red. Whole spikes are picked into baskets and the berries are then threshed from their stalks.</p>
-        <dl class="spec"><dt>Signal</dt><dd>1–2 red berries per spike</dd><dt>Method</dt><dd>Hand-picked</dd><dt>Threshing</dt><dd>Manual or mechanical</dd></dl>
-        <p class="sr">Scene: ripe spikes lifting from the vine into a woven basket.</p>
-      </div>
-      <div data-only="cardamom">
-        <h2>Picked green, <em>pod by pod.</em></h2>
-        <p>Capsules are picked by hand when fully mature but still green, in rounds through the season. Picking at the right moment keeps both the colour and the aromatic oil.</p>
-        <dl class="spec"><dt>Picking rounds</dt><dd>Every 15–30 days</dd><dt>Method</dt><dd>Hand-picked</dd><dt>Stage</dt><dd>Mature, still green</dd></dl>
-        <p class="sr">Scene: green capsules lifting from the ground panicles into a woven basket.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="stage" data-name="Dry">
-    <div class="copy">
-      <div data-only="pepper">
-        <div class="kicker">04 / 05 · Sun drying</div>
-        <h2>A week <em>in the sun.</em></h2>
-        <p>Berries are spread thin on clean mats and turned through the day. As moisture leaves, the skin darkens and wrinkles into the black peppercorn.</p>
-        <dl class="spec"><dt>Drying time</dt><dd>7–10 days</dd><dt>Target moisture</dt><dd>≤ 12 %</dd><dt>Dry recovery</dt><dd>≈ 1/3 of fresh weight</dd></dl>
-        <p class="sr">Scene: a heap of berries raked flat on a woven mat, turning black in the sun.</p>
-      </div>
-      <div data-only="cardamom">
-        <div class="kicker">04 / 05 · Curing</div>
-        <h2>Cured <em>to keep the green.</em></h2>
-        <p>Fresh capsules are cured on trays in a heated curing house rather than in the sun. Gentle, even heat draws out moisture while holding the deep green colour.</p>
-        <dl class="spec"><dt>Curing temp.</dt><dd>45–50 °C</dd><dt>Curing time</dt><dd>≈ 18–36 hours</dd><dt>Target moisture</dt><dd>≤ 10 %</dd></dl>
-        <p class="sr">Scene: green capsules spread on a wire-mesh curing tray, drying to olive green.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="stage" data-name="Pack">
-    <div class="copy">
-      <div class="kicker">05 / 05 · Grade, pack &amp; ship</div>
-      <h2>Graded, packed, <em>sealed at origin.</em></h2>
-      <p>Each lot is cleaned, graded and tested, then packed to your specification. We stuff and seal the container at origin and prepare the export documents.</p>
-      <dl class="spec">
-        <dt>Grading</dt><dd><span data-only="pepper">Size &amp; density (g/L), to contract</span><span data-only="cardamom">7–8 mm, deep green</span></dd>
-        <dt>Packing</dt><dd><span data-only="pepper">25 / 50 kg jute or PP bags</span><span data-only="cardamom">10 / 25 kg lined cartons or bags</span></dd>
-        <dt>Documents</dt><dd>Phyto · Origin · Quality</dd></dl>
-      <p class="sr">Scene: jute sacks carried into a shipping container shown in see-through mode, then the doors close.</p>
+      <div class="kicker">02 / 03 · Loaded &amp; sealed</div>
+      <h2>Loaded and <em>sealed at origin.</em></h2>
+      <p>We stuff and seal the container at our end and prepare the export documents, so your shipment arrives exactly as it left.</p>
+      <dl class="spec"><dt>Shipments</dt><dd>20′ / 40′ FCL · LCL</dd><dt>Documents</dt><dd>Phyto · Origin · Quality</dd><dt>Seal</dt><dd>Applied at origin</dd></dl>
+      <p class="sr">Scene: jute sacks are lowered into a shipping container shown in see-through mode, then the doors close.</p>
     </div>
   </section>
 
   <section class="stage" data-name="Ship">
     <div class="copy">
-      <div class="kicker">Delivered</div>
+      <div class="kicker">03 / 03 · Delivered</div>
       <h2>One partner <em>for both spices.</em></h2>
       <p>Black pepper and green cardamom from one exporter: consistent lots, clear specifications and samples before you contract.</p>
-      <dl class="spec"><dt>Terms</dt><dd>FOB · CFR · CIF</dd><dt>Shipments</dt><dd>20′ / 40′ FCL · LCL</dd><dt>Samples</dt><dd>Before contract</dd></dl>
+      <dl class="spec"><dt>Terms</dt><dd>FOB · CFR · CIF</dd><dt>Samples</dt><dd>Before contract</dd></dl>
       <div class="actions"><a class="btn" href="#contact">Request a quote</a><a class="link" href="#products">View specs →</a></div>
       <p class="sr">Scene: the sealed container in a port yard among stacked containers.</p>
     </div>
@@ -359,25 +271,8 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const lite = matchMedia('(pointer: coarse)').matches || (navigator.deviceMemory || 8) <= 4; // phones / low-memory: lighter 3D tier
 
-// ---------- crop switch (header tabs, hero picker, ?crop= in the URL) ----------
-const CROPS = ['pepper', 'cardamom'];
-let crop = CROPS.includes(new URLSearchParams(location.search).get('crop')) ? new URLSearchParams(location.search).get('crop') : 'pepper';
-const cropHooks = [];
-function applyCrop(c, focusTab) {
-  crop = c; document.body.dataset.crop = c;
-  document.querySelectorAll('[role="tab"][data-crop-set]').forEach(b => { const on = b.dataset.cropSet === c; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; if (on && focusTab) b.focus(); });
-  document.querySelectorAll('.pick [data-crop-set]').forEach(b => b.setAttribute('aria-pressed', b.dataset.cropSet === c));
-  const sel = document.getElementById('f-prod'); if (sel.selectedIndex < 2) sel.selectedIndex = c === 'pepper' ? 0 : 1;
-  const u = new URL(location); u.searchParams.set('crop', c); history.replaceState(null, '', u);
-  cropHooks.forEach(f => f(c));
-}
-document.querySelectorAll('[data-crop-set]').forEach(b => b.addEventListener('click', () => { if (b.dataset.cropSet !== crop) applyCrop(b.dataset.cropSet); }));
-document.querySelector('.switch').addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); applyCrop(CROPS[(CROPS.indexOf(crop) + 1) % 2], true); }
-});
-applyCrop(crop);
 document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => {
-  const sel = document.getElementById('f-prod'); sel.value = b.dataset.add;
+  document.getElementById('f-prod').value = b.dataset.add;
   document.getElementById('contact').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); setTimeout(() => document.getElementById('f-name').focus({ preventScroll: true }), reduce ? 0 : 700);
 }));
 
@@ -452,47 +347,13 @@ async function init() {
     if (color) t.colorSpace = T.SRGBColorSpace; t.anisotropy = ANISO; return t; }
   const weave = (W, base, dark, size = 512) => paint(size, size, (u, v) => { const X = u * W, Y = v * W, cx = Math.floor(X), cy = Math.floor(Y), over = (cx + cy) & 1;
     const s = over ? Math.sin((X - cx) * Math.PI) : Math.sin((Y - cy) * Math.PI); return mix(dark, base, (.3 + .7 * s) * (.8 + .3 * noise2p(u * 64, v * 64, 64, 64))); });
-
-  const soilC = paint(512, 512, (u, v) => { const n = fbm2(u, v, 6, 6, 5), f = noise2p(u * 128, v * 128, 128, 128), p = fbm2(u, v, 40, 40, 2);
-    let c = mix(rgb(0x3a2a1c), rgb(0x6e5338), n).map(x => x * (.82 + .36 * f)); return p > .7 ? mix(c, rgb(0x9a8a76), (p - .7) * 3) : c; });
-  await breathe();
-  const barkC = paint(512, 1024, (u, v) => { const n = fbm2(u, v, 10, 3, 5), s = fbm2(u, v, 28, 4, 4); return mix(rgb(0x3a2e25), rgb(0x8a7a68), n * .7 + Math.pow(Math.abs(s - .5) * 2, .9) * .35); });
-  await breathe();
   const concC = paint(512, 512, (u, v) => mix(rgb(0x8c877e), rgb(0xc4beb2), fbm2(u, v, 8, 8, 5) * .8 + noise2p(u * 256, v * 256, 256, 256) * .2));
-  const limeC = paint(512, 512, (u, v) => { const n = fbm2(u, v, 5, 5, 5), f = noise2p(u * 200, v * 200, 200, 200); return mix(rgb(0x968e7f), rgb(0xbdb6a6), n * .8 + f * .2); });
+  const floorC = paint(512, 512, (u, v) => mix(rgb(0xd6d2c8), rgb(0xebe8e0), fbm2(u, v, 4, 4, 5) * .8 + noise2p(u * 200, v * 200, 200, 200) * .2));
   await breathe();
   const corrC = paint(256, 32, (u, v) => { const s = .5 + .5 * Math.sin(u * Math.PI * 16), k = (.8 + .2 * s) * (.9 + .1 * noise2p(u * 32, v * 4, 32, 4)) * 255; return [k, k, k]; });
   const plankC = paint(256, 256, (u, v) => { const pl = Math.floor(v * 8); let c = mix(rgb(0x6a4c30), rgb(0xa8845e), fbm2(u, v, 2, 32, 4) * (.7 + .3 * hash(pl, 1, 1))); return (v * 8) % 1 < .05 ? c.map(x => x * .45) : c; });
   const juteC = weave(48, rgb(0xc29f6e), rgb(0x8e7046));
   await breathe();
-  const matC = weave(40, rgb(0xc4a36e), rgb(0x6e5230));
-  const meshC = weave(64, rgb(0xb8b6ae), rgb(0x4a4945));
-  await breathe();
-
-  function leafCanvas(c1, c2, vein) {
-    const c = document.createElement('canvas'); c.width = 256; c.height = 512; const g = c.getContext('2d');
-    const path = new Path2D(); path.moveTo(128, 486); path.bezierCurveTo(28, 506, 2, 330, 52, 200); path.bezierCurveTo(82, 120, 116, 50, 128, 8);
-    path.bezierCurveTo(140, 50, 174, 120, 204, 200); path.bezierCurveTo(254, 330, 228, 506, 128, 486);
-    const gr = g.createLinearGradient(0, 0, 256, 0); gr.addColorStop(0, c1); gr.addColorStop(.5, c2); gr.addColorStop(1, c1);
-    g.fillStyle = gr; g.fill(path); g.save(); g.clip(path);
-    for (let i = 0; i < 700; i++) { g.fillStyle = rand() < .5 ? 'rgba(0,0,0,.06)' : 'rgba(255,255,220,.04)'; g.beginPath(); g.arc(rand() * 256, rand() * 512, 2 + rand() * 12, 0, 6.3); g.fill(); }
-    g.strokeStyle = vein; g.lineWidth = 3.4; g.beginPath(); g.moveTo(128, 488); g.lineTo(128, 10); g.stroke();
-    g.lineWidth = 1.7; for (const k of [-2, -1, 1, 2]) { g.beginPath(); g.moveTo(128, 472); g.quadraticCurveTo(128 + k * 56, 300, 128 + k * 8, 46); g.stroke(); }
-    g.globalAlpha = .4; g.lineWidth = .8; for (let i = 0; i < 60; i++) { const y = 60 + rand() * 400, x = 128 + (rand() - .5) * 170; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rand() - .5) * 26, y - 8 - rand() * 18); g.stroke(); }
-    g.restore(); g.lineWidth = 3; g.strokeStyle = 'rgba(10,20,6,.55)'; g.stroke(path); return c;
-  }
-  function cardLeafCanvas() {
-    const c = document.createElement('canvas'); c.width = 128; c.height = 1024; const g = c.getContext('2d');
-    const path = new Path2D(); path.moveTo(64, 1020); path.bezierCurveTo(34, 990, 6, 720, 10, 520); path.bezierCurveTo(14, 300, 48, 90, 64, 4);
-    path.bezierCurveTo(80, 90, 114, 300, 118, 520); path.bezierCurveTo(122, 720, 94, 990, 64, 1020);
-    const gr = g.createLinearGradient(0, 0, 128, 0); gr.addColorStop(0, '#24481a'); gr.addColorStop(.5, '#3f7a2b'); gr.addColorStop(1, '#24481a');
-    g.fillStyle = gr; g.fill(path); g.save(); g.clip(path);
-    for (let i = 0; i < 500; i++) { g.fillStyle = rand() < .5 ? 'rgba(0,0,0,.05)' : 'rgba(255,255,210,.035)'; g.beginPath(); g.arc(rand() * 128, rand() * 1024, 2 + rand() * 9, 0, 6.3); g.fill(); }
-    g.strokeStyle = 'rgba(200,225,150,.16)'; g.lineWidth = 1;
-    for (let y = 1000; y > 20; y -= 7) { g.beginPath(); g.moveTo(64, y); g.quadraticCurveTo(42, y - 12, 0, y - 44); g.moveTo(64, y); g.quadraticCurveTo(86, y - 12, 128, y - 44); g.stroke(); }
-    g.strokeStyle = 'rgba(195,222,145,.6)'; g.lineWidth = 3; g.beginPath(); g.moveTo(64, 1022); g.lineTo(64, 6); g.stroke();
-    g.restore(); g.lineWidth = 2; g.strokeStyle = 'rgba(10,24,6,.5)'; g.stroke(path); return c;
-  }
 
   // ---------- geometry helpers ----------
   function weldNormals(g) { g.computeVertexNormals(); const p = g.attributes.position, n = g.attributes.normal, map = new Map();
@@ -517,7 +378,8 @@ async function init() {
   const shadow = (o, c = true, r = true) => { o.castShadow = c; o.receiveShadow = r; return o; };
   const M = o => new T.MeshStandardMaterial(o);
   const group = () => { const g = new T.Group(); scene.add(g); return g; };
-  const Z = { bench: group(), pepper: group(), cardamom: group(), pdry: group(), cdry: group(), port: group() }; // zones; only the active ones are drawn
+  const Z = { rain: group(), port: group() }; // zones; only the one the camera can see is drawn
+  const _m = new T.Matrix4(), _q = new T.Quaternion(), _q2 = new T.Quaternion(), _e = new T.Euler(), _s = V(1, 1, 1), _p = V(0, 0, 0);
 
   // ---------- daylight: sky dome, sun, sky/ground fill, bright environment ----------
   const skyU = { top: { value: new T.Color(0xa9c4dc) }, horizon: { value: new T.Color(0xe9ece6) } };
@@ -534,188 +396,54 @@ async function init() {
     panel(new T.Color(6, 5.6, 5), -6, 13, 6, 6, .2, 6); panel(new T.Color(.45, .38, .28), 0, -14, 0, 30, .2, 30);
     scene.environment = new T.PMREMGenerator(R).fromScene(env, .04).texture; }
 
-  // ---------- ground ----------
-  const soilMat = M({ map: tex(soilC, 70, 40), bumpMap: tex(soilC, 70, 40, false), bumpScale: .25, roughness: .95 });
-  const ground = shadow(new T.Mesh(new T.PlaneGeometry(160, 90), soilMat), false); ground.rotation.x = -Math.PI / 2; ground.position.x = 30; scene.add(ground);
+  // ---------- ground: seamless light studio floor for the rain; concrete quay at the port ----------
+  const studio = shadow(new T.Mesh(new T.CircleGeometry(30, 64), M({ map: tex(floorC, 14, 14), roughness: .9 })), false); studio.rotation.x = -Math.PI / 2; Z.rain.add(studio);
   const concMat = M({ map: tex(concC, 12, 14), bumpMap: tex(concC, 12, 14, false), bumpScale: .08, roughness: .9 });
   const quay = shadow(new T.Mesh(new T.PlaneGeometry(60, 70), concMat), false); quay.rotation.x = -Math.PI / 2; quay.position.set(72, .006, 0); Z.port.add(quay);
 
-  // ---------- shared farm pieces ----------
-  const _m = new T.Matrix4(), _m2 = new T.Matrix4(), _q = new T.Quaternion(), _e = new T.Euler(0, 0, 0, 'YXZ'), _s = V(1, 1, 1), _p = V(0, 0, 0), UP = V(0, 1, 0);
-  const tint = new T.Color();
-  const barkMat = M({ map: tex(barkC, 2, 5), bumpMap: tex(barkC, 2, 5, false), bumpScale: .35, roughness: .95 });
-  const litterMat = M({ map: tex(leafCanvas('#5a3a20', '#9a7048', 'rgba(170,130,90,.5)')), alphaTest: .5, side: T.DoubleSide, roughness: .9 });
-  const smallLeafGeo = new T.PlaneGeometry(.11, .16, 6, 12); smallLeafGeo.translate(0, .08, 0);
-  { const p = smallLeafGeo.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, (x / .055) ** 2 * .012 + (y / .16) ** 2 * .03); }
-    smallLeafGeo.rotateX(Math.PI / 2); smallLeafGeo.computeVertexNormals(); }
-  const NL = lite ? 600 : 1200, litter = shadow(new T.InstancedMesh(smallLeafGeo, litterMat, NL), false);
-  for (let i = 0; i < NL; i++) { const a = rand() * 6.28, r = .3 + rand() ** .7 * 8;
-    litter.setMatrixAt(i, _m.compose(V(Math.cos(a) * r, .004, Math.sin(a) * r - 1.5), _q.setFromEuler(_e.set(-.02 + rand() * .06, rand() * 6.28, (rand() - .5) * .3)), _s.setScalar(.7 + rand() * .5)));
-    litter.setColorAt(i, tint.setScalar(.6 + rand() * .5)); }
-  scene.add(litter);
-  const wind = { value: 0 };
-  const windy = (mat, len) => { mat.onBeforeCompile = sh => { sh.uniforms.uTime = wind; sh.vertexShader = 'uniform float uTime;\n' + sh.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>
-    #ifdef USE_INSTANCING
-      float wf = clamp(position.z / ${len.toFixed(3)}, 0., 1.); vec3 ip = instanceMatrix[3].xyz;
-      transformed.x += sin(uTime * 1.3 + ip.x * 2.1 + ip.z * 1.7) * ${(len * .05).toFixed(4)} * wf * wf;
-      transformed.y += sin(uTime * 1.9 + ip.z * 2.3 + ip.x) * ${(len * .03).toFixed(4)} * wf * wf;
-    #endif`); }; return mat; };
-  const basketPos = V(1.1, 0, .9);
-  { const basketMat = M({ map: tex(weave(22, rgb(0xc8a76e), rgb(0x6a4c2a)), 5, 1), side: T.DoubleSide, roughness: .9 });
-    const basket = new T.Group(); basket.position.copy(basketPos).setY(.13);
-    basket.add(shadow(new T.Mesh(new T.CylinderGeometry(.27, .21, .26, 48, 1, true), basketMat)));
-    const bb = shadow(new T.Mesh(new T.CircleGeometry(.21, 32), basketMat)); bb.rotation.x = -Math.PI / 2; bb.position.y = -.125; basket.add(bb);
-    const rimT = shadow(new T.Mesh(new T.TorusGeometry(.27, .012, 8, 48), M({ color: 0x7d5e38, roughness: .8 }))); rimT.rotation.x = Math.PI / 2; rimT.position.y = .13; basket.add(rimT);
-    scene.add(basket); }
-  await breathe();
-
-  // ---------- pepper farm: support trees with helix vines, hanging fruit spikes ----------
-  const pLeafMat = windy(M({ map: tex(leafCanvas('#24461a', '#43772e', 'rgba(185,215,135,.55)')), alphaTest: .5, side: T.DoubleSide, roughness: .42 }), .16);
-  const pStemMat = M({ color: 0x4a5a2a, roughness: .7 });
-  const pTrunkGeo = new T.CylinderGeometry(.2, .26, 9, 40, 30); pTrunkGeo.translate(0, 4.5, 0);
-  { const p = pTrunkGeo.attributes.position, v = V(0, 0, 0); for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const a = Math.atan2(v.z, v.x);
-      const k = 1 + .09 * (noise3(Math.cos(a) * 1.5, v.y * .7, Math.sin(a) * 1.5) - .5); p.setXYZ(i, v.x * k, v.y, v.z * k); } weldNormals(pTrunkGeo); }
-  const leafMatrix = (L, g) => { _e.set(L.droop, L.yaw, L.roll); _q.setFromEuler(_e); _s.setScalar(L.s * g + 1e-5); return _m.compose(L.p, _q, _s); };
-  function vine(cx, cz, H, perStem, segs) {
-    const stems = [], leaves = [];
-    for (let s = 0; s < 3; s++) {
-      const ph = s * 2.1 + rand(), turns = 2.3 + rand() * .6, h = H * (1 - s * .07);
-      const c = new T.Curve(); c.getPoint = (t, o = V(0, 0, 0)) => { const a = ph + t * Math.PI * 2 * turns, r = .235 + .012 * Math.sin(t * 60 + s); return o.set(cx + Math.cos(a) * r, .02 + t * h, cz + Math.sin(a) * r); };
-      const geo = new T.TubeGeometry(c, segs, .011, 5, false), mesh = shadow(new T.Mesh(geo, pStemMat)); Z.pepper.add(mesh); stems.push({ mesh, geo, segs });
-      for (let i = 0; i < perStem; i++) {
-        const t = Math.min(1, (i + rand() * .7) / perStem), p = c.getPoint(t), ang = Math.atan2(p.x - cx, p.z - cz) + (rand() - .5) * 1.6, d = t < .08 ? .008 + rand() * .02 : .015 + rand() ** 1.6 * .2;
-        leaves.push({ p: V(p.x + Math.sin(ang) * d, p.y + (rand() - .5) * .06, p.z + Math.cos(ang) * d), t, yaw: ang + (rand() - .5) * .8, droop: .25 + rand() * .85, roll: (rand() - .5) * .7, s: (t < .04 ? .55 : .8) + rand() * .45 });
-      }
-    }
-    return { stems, leaves };
-  }
-  const pTrees = [[0, 0], [-3, -.4], [3.1, .3], [0, -3.2], [-3, -3.4], [3, -3], [-6, -3.2], [6, -3.4], [-1.5, -6.4], [1.6, -6.2], [-4.6, -6.5], [4.6, -6.3], [-6.2, .2], [6.1, .1]];
-  const pTrunks = shadow(new T.InstancedMesh(pTrunkGeo, barkMat, pTrees.length));
-  pTrees.forEach(([x, z], i) => pTrunks.setMatrixAt(i, _m.compose(V(x, 0, z), _q.setFromEuler(_e.set(0, rand() * 6, 0)), _s.set(1, 1, 1))));
-  Z.pepper.add(pTrunks);
-  const pMain = vine(0, 0, 5, 95, 400);
-  const pLeavesMain = shadow(new T.InstancedMesh(smallLeafGeo, pLeafMat, pMain.leaves.length)); Z.pepper.add(pLeavesMain);
-  pMain.leaves.forEach((L, i) => pLeavesMain.setColorAt(i, tint.setScalar(.8 + rand() * .3)));
-  const pBg = pTrees.slice(1, lite ? 8 : undefined).map(([x, z]) => vine(x, z, 4.4 + rand() * .8, 70, 120)), pBgLeaves = pBg.flatMap(v => v.leaves);
-  const pLeavesBg = shadow(new T.InstancedMesh(smallLeafGeo, pLeafMat, pBgLeaves.length), false, true);
-  pBgLeaves.forEach((L, i) => { pLeavesBg.setMatrixAt(i, leafMatrix(L, 1)); pLeavesBg.setColorAt(i, tint.setScalar(.75 + rand() * .35)); });
-  Z.pepper.add(pLeavesBg);
-  const BER = 44, berryGeo = new T.SphereGeometry(1, 12, 10);
-  const spikeSrc = pMain.leaves.filter((L, i) => L.t > .22 && i % 4 === 0);
-  const berries = shadow(new T.InstancedMesh(berryGeo, new T.MeshPhysicalMaterial({ roughness: .3, clearcoat: .6, clearcoatRoughness: .25 }), spikeSrc.length * BER));
-  const stalkGeo = new T.CylinderGeometry(.0017, .0017, 1, 5); stalkGeo.translate(0, -.5, 0);
-  const stalks = shadow(new T.InstancedMesh(stalkGeo, pStemMat, spikeSrc.length));
-  const spikes = spikeSrc.map((L, j) => {
-    const len = .12 + rand() * .06, a = rand() * 6.28, r = Math.sqrt(rand()) * .07;
-    const locals = []; for (let k = 0; k < BER; k++) { const f = k / BER, an = k * 2.4, rad = .0098 * (1 - .35 * f);
-      locals.push(new T.Matrix4().compose(V(Math.cos(an) * rad, -.008 - f * len, Math.sin(an) * rad), new T.Quaternion(), V(1, 1, 1).setScalar(.0088 * (1 - .3 * f)))); }
-    return { home: L.p.clone().add(V(0, -.012, 0)), dest: V(basketPos.x + Math.cos(a) * r, .05 + j * .0025, basketPos.z + Math.sin(a) * r),
-      q: new T.Quaternion().setFromEuler(new T.Euler((rand() - .5) * .35, rand() * 6.28, (rand() - .5) * .35, 'YXZ')),
-      qd: new T.Quaternion().setFromEuler(new T.Euler(Math.PI / 2 + (rand() - .5) * .4, rand() * 6.28, 0, 'YXZ')),
-      stalk: new T.Matrix4().makeScale(1, len + .012, 1), locals, o: rand(), rr: Array.from({ length: BER }, () => rand()), gv: Array.from({ length: BER }, () => rand()) };
-  });
-  Z.pepper.add(berries, stalks);
-  const G0 = new T.Color(0x35591a), G1 = new T.Color(0x5e8526), YEL = new T.Color(0x9a9a2a), RED = new T.Color(0xa3231a);
-  await breathe();
-
-  // ---------- cardamom forest: shade trees, clumps of leafy shoots, ground panicles ----------
-  const cLeafMat = windy(M({ map: tex(cardLeafCanvas()), alphaTest: .5, side: T.DoubleSide, roughness: .38 }), .62);
-  const cLeafGeo = new T.PlaneGeometry(.12, .62, 4, 28); cLeafGeo.translate(0, .31, 0);
-  { const p = cLeafGeo.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, (x / .06) ** 2 * .01 + (y / .62) ** 2 * .22); }
-    cLeafGeo.rotateX(Math.PI / 2); cLeafGeo.computeVertexNormals(); }
-  const cTrunkGeo = new T.CylinderGeometry(.22, .3, 14, 40, 30); cTrunkGeo.translate(0, 7, 0);
-  { const p = cTrunkGeo.attributes.position, v = V(0, 0, 0); for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const a = Math.atan2(v.z, v.x);
-      const k = 1 + .09 * (noise3(Math.cos(a) * 1.5, v.y * .7, Math.sin(a) * 1.5) - .5); p.setXYZ(i, v.x * k, v.y, v.z * k); } weldNormals(cTrunkGeo); }
-  const cStemMat = M({ color: 0x55722f, roughness: .6 }), cStemGeo = new T.CylinderGeometry(.011, .019, 1, 8); cStemGeo.translate(0, .5, 0);
-  function clump(cx, cz, n, H0) {
-    const stems = [];
-    for (let k = 0; k < n; k++) {
-      const a = rand() * 6.28, r = Math.sqrt(rand()) * .22, lean = .05 + rand() * .2;
-      const axis = V(Math.cos(a) * Math.sin(lean), Math.cos(lean), Math.sin(a) * Math.sin(lean)).normalize(), leaves = [], nl = 8 + Math.floor(rand() * 3);
-      for (let i = 0; i < nl; i++) { const r_ = .42 + i / nl * .58 + (rand() - .5) * .04;
-        leaves.push({ r: r_, side: i % 2, pitch: -.3 - .85 * r_ + (rand() - .5) * .2, roll: (rand() - .5) * .4, yj: (rand() - .5) * .35, s: (.75 + rand() * .35) * (r_ > .92 ? .8 : 1) }); }
-      stems.push({ base: V(cx + Math.cos(a) * r, 0, cz + Math.sin(a) * r), axis, q: new T.Quaternion().setFromUnitVectors(UP, axis), H: H0 * (.75 + rand() * .35), phi: rand() * 6.28, leaves, t0: k === 0 ? 0 : .1 + k / n * .5 });
-    }
-    return stems;
-  }
-  const leafM = (st, L, h, g) => { _p.copy(st.base).addScaledVector(st.axis, L.r * st.H * h); _q.setFromEuler(_e.set(L.pitch, st.phi + L.side * Math.PI + L.yj, L.roll)); return _m.compose(_p, _q, _s.setScalar(L.s * g + 1e-5)); };
-  const stemM = (st, h) => { const k = Math.min(1, h * 10) + 1e-5; return _m.compose(st.base, st.q, _s.set(k, st.H * h + 1e-4, k)); };
-  const cTrees = [[-2.6, -1.9], [2.9, -2.4], [-.4, -4.6], [4.6, 1.3], [-4.8, 1.1], [-3.4, -5.6], [3.2, -6.4], [6.4, -3.2], [-6.6, -2.8]];
-  const cTrunks = shadow(new T.InstancedMesh(cTrunkGeo, barkMat, cTrees.length));
-  cTrees.forEach(([x, z], i) => cTrunks.setMatrixAt(i, _m.compose(V(x, 0, z), _q.setFromEuler(_e.set(0, rand() * 6, 0)), _s.setScalar(.85 + rand() * .35))));
-  Z.cardamom.add(cTrunks);
-  const cMain = clump(0, 0, 14, 2.6), cMainLeafN = cMain.reduce((n, st) => n + st.leaves.length, 0);
-  const cStemsMain = shadow(new T.InstancedMesh(cStemGeo, cStemMat, cMain.length)), cLeavesMain = shadow(new T.InstancedMesh(cLeafGeo, cLeafMat, cMainLeafN));
-  for (let i = 0; i < cMainLeafN; i++) cLeavesMain.setColorAt(i, tint.setScalar(.8 + rand() * .3));
-  Z.cardamom.add(cStemsMain, cLeavesMain);
-  const cBg = [[-1.7, -1.2], [1.8, -1], [0, -2.7], [-3.1, -2.9], [3.2, -3.4], [-1.6, -4.5], [1.7, -4.7], [-3.7, .4], [3.7, .1], [-4.6, -5.1], [4.5, -5.5], [-2.4, 1.6], [5.6, -1.5]]
-    .slice(0, lite ? 8 : 13).map(([x, z]) => clump(x, z, 10 + Math.floor(rand() * 5), 2.2 + rand() * .8)).flat();
-  const cBgLeafN = cBg.reduce((n, st) => n + st.leaves.length, 0);
-  const cStemsBg = shadow(new T.InstancedMesh(cStemGeo, cStemMat, cBg.length), false, true), cLeavesBg = shadow(new T.InstancedMesh(cLeafGeo, cLeafMat, cBgLeafN), false, true);
-  { let li = 0; cBg.forEach((st, k) => { cStemsBg.setMatrixAt(k, stemM(st, 1)); for (const L of st.leaves) { cLeavesBg.setMatrixAt(li, leafM(st, L, 1, 1)); cLeavesBg.setColorAt(li++, tint.setScalar(.72 + rand() * .38)); } }); }
-  Z.cardamom.add(cStemsBg, cLeavesBg);
-  // capsule skin (fine ribs) and the hi-res specimen skin aligned with the geometry's 36 ridges
-  const ribC = paint(256, 64, (u, v) => { const k = (.93 + .07 * Math.abs(Math.sin(u * Math.PI * 36))) * (.92 + .08 * noise2p(u * 32, v * 8, 32, 8)) * 255; return [k, k * .99, k * .9]; });
-  const podSkin = o => new T.MeshPhysicalMaterial(Object.assign({ map: tex(ribC), bumpMap: tex(ribC, 1, 1, false), bumpScale: .03, roughness: .5, sheen: .6, sheenColor: 0xd9efb4, sheenRoughness: .6 }, o));
-  const panMat = M({ color: 0x77823f, roughness: .7 }), panicles = [], nodes = [];
-  for (let i = 0; i < 9; i++) {
-    const a = i / 9 * 6.28 + rand() * .4, Lp = .55 + rand() * .3, curl = (rand() - .5) * .9, o = rand();
-    const c = new T.Curve(); c.getPoint = (t, out = V(0, 0, 0)) => { const rr = .1 + t * Lp, an = a + curl * t; return out.set(Math.cos(an) * rr, .014 + .05 * (1 - t) * Math.sin(Math.min(1, t * 3) * Math.PI / 2), Math.sin(an) * rr); };
-    const geo = new T.TubeGeometry(c, 60, .0035, 4, false), mesh = shadow(new T.Mesh(geo, panMat)); Z.cardamom.add(mesh); panicles.push({ geo, mesh, o, pg: 0 });
-    for (let n = 0; n < 7; n++) { const tn = .22 + n * .12; nodes.push({ p: c.getPoint(tn), tn, o, pi: i }); }
-  }
-  const flowers = shadow(new T.InstancedMesh(new T.SphereGeometry(1, 10, 6), M({ color: 0xeee6d2, roughness: .6 }), nodes.length));
-  const pods = shadow(new T.InstancedMesh(podGeo(18, 12), podSkin({ clearcoat: .25 }), nodes.length * 3));
-  Z.cardamom.add(flowers, pods);
-  const podList = [];
-  nodes.forEach(N => { for (let k = 0; k < 3; k++) { const a = rand() * 6.28, r = Math.sqrt(rand()) * .12;
-    podList.push({ N, home: N.p.clone().add(V((rand() - .5) * .03, .006, (rand() - .5) * .03)), dest: V(basketPos.x + Math.cos(a) * r, .04 + rand() * .06, basketPos.z + Math.sin(a) * r),
-      q: new T.Quaternion().setFromEuler(new T.Euler(Math.PI / 2 + (rand() - .5) * .7, rand() * 6.28, 0, 'YXZ')), qd: new T.Quaternion().setFromEuler(new T.Euler(Math.PI / 2, rand() * 6.28, rand() * 6, 'YXZ')),
-      h: rand(), v: rand() }); } });
-  const PALE = new T.Color(0xa9c779), DEEP = new T.Color(0x3d7a22);
-  await breathe();
-
-  // ---------- hero bench: limestone slab with a peppercorn and a cardamom capsule (true relative size) ----------
-  const BENCH = V(-2.2, 0, 2.6);
-  const slab = shadow(new T.Mesh(new T.BoxGeometry(1.1, .8, .62), M({ map: tex(limeC, 1, 1), bumpMap: tex(limeC, 1, 1, false), bumpScale: .05, roughness: .8 })));
-  slab.position.copy(BENCH).setY(.4); Z.bench.add(slab);
+  // ---------- product specimens (shared by the rain, the heap and the spec bench) ----------
   const heroC = paint(1024, 512, (u, v) => {
     const ridge = Math.pow(Math.abs(Math.sin(u * Math.PI * 36)), .7), lobe = .5 + .5 * Math.cos(3 * (Math.PI - u * Math.PI * 2));
     const n = fbm2(u, v, 24, 6, 4), speck = noise2p(u * 256, v * 128, 256, 128);
-    let c = mix(rgb(0x4a7528), rgb(0x84ad4a), ridge * .14 + n * .5 + lobe * .2 + speck * .08);
+    let c = mix(rgb(0x3a6420), rgb(0x6c9638), ridge * .14 + n * .5 + lobe * .2 + speck * .08);
     if (v > .82) c = mix(c, rgb(0xa49a5a), Math.pow((v - .82) / .18, 1.6) * .85);
     if (v < .07) c = mix(c, rgb(0x55552c), (1 - v / .07) * .7);
     return c; });
   await breathe();
   const heroBump = paint(1024, 512, (u, v) => { const k = (Math.pow(Math.abs(Math.sin(u * Math.PI * 36)), .7) * .35 + fbm2(u, v, 40, 10, 3) * .65) * 255; return [k, k, k]; });
-  const heroMat = new T.MeshPhysicalMaterial({ map: tex(heroC), bumpMap: tex(heroBump, 1, 1, false), bumpScale: .003, roughness: .58, sheen: .35, sheenColor: 0xd3e6a8, sheenRoughness: .7 });
+  const heroMat = new T.MeshPhysicalMaterial({ map: tex(heroC), bumpMap: tex(heroBump, 1, 1, false), bumpScale: .003, roughness: .62, sheen: .2, sheenColor: 0xd3e6a8, sheenRoughness: .7 });
   const heroPodGeo = podGeo(lite ? 120 : 160, lite ? 72 : 96, true);
-  const pepperMat = M({ color: 0x2f221b, roughness: .6 }), pepperGeo = wrinkled(1, 96, 72, .07, 5);
+  const pepperMat = new T.MeshPhysicalMaterial({ color: 0x2b1f18, roughness: .55, sheen: .4, sheenColor: 0x7a5a44, sheenRoughness: .6 }), pepperGeo = wrinkled(1, 96, 72, .07, 5);
   const strawMat = M({ color: 0x8c7d48, roughness: .85 }), tipMat = M({ color: 0x4f5229, roughness: .75 });
   function makePod() { const g = new T.Group(); g.add(shadow(new T.Mesh(heroPodGeo, heroMat)));
     const stub = shadow(new T.Mesh(new T.CylinderGeometry(.045, .07, .1, 16), strawMat)); stub.position.set(.06, -1.01, 0); g.add(stub);
     const beak = shadow(new T.Mesh(new T.ConeGeometry(.045, .08, 16), tipMat)); beak.position.set(.06, 1.04, 0); g.add(beak); return g; }
-  const MM = .0072; // scene units per millimetre on the bench (a 7.5 mm capsule ≈ 0.054 units across)
-  const bPod = makePod(); bPod.scale.setScalar(MM * 6.25); Z.bench.add(bPod);
-  const bPep = shadow(new T.Mesh(pepperGeo, pepperMat)); bPep.scale.setScalar(MM * 2.25); Z.bench.add(bPep);
-  const benchTop = .8, podHome = V(BENCH.x + .07, benchTop + MM * 3.75, BENCH.z + .02), pepHome = V(BENCH.x - .07, benchTop + MM * 2.2, BENCH.z + .03);
   await breathe();
 
-  // ---------- pepper sun-drying yard and cardamom curing tray (same pad at x = 30) ----------
-  const DRY = V(30, 0, 0);
-  const pad = shadow(new T.Mesh(new T.BoxGeometry(7, .06, 5.5), concMat), false, true); pad.position.set(DRY.x, .03, 0); Z.pdry.add(pad); Z.cdry.add(pad.clone());
-  const pMat = shadow(new T.Mesh(new T.BoxGeometry(2.8, .012, 2), M({ map: tex(matC, 4, 3), bumpMap: tex(matC, 4, 3, false), bumpScale: .2, roughness: .95 })), false, true); pMat.position.set(DRY.x, .066, 0); Z.pdry.add(pMat);
-  const cTray = shadow(new T.Mesh(new T.BoxGeometry(2.8, .012, 2), M({ map: tex(meshC, 4, 3), roughness: .5, metalness: .6 })), false, true); cTray.position.set(DRY.x, .066, 0); Z.cdry.add(cTray);
-  const NC = lite ? 1500 : 3000;
-  function dryBed(geo, mat, fresh, dry, lying) { const mesh = shadow(new T.InstancedMesh(geo, mat, NC)), d = { mesh, spread: [], cr: [], cFresh: [], cDry: [] };
-    for (let i = 0; i < NC; i++) {
-      d.spread.push(V(DRY.x + (rand() - .5) * 2.65, .08, (rand() - .5) * 1.85)); d.cr.push(V(lying ? Math.PI / 2 + (rand() - .5) * .3 : rand() * 6, rand() * 6.28, rand() * 6));
-      d.cFresh.push(new T.Color().lerpColors(fresh[0], fresh[1], rand())); d.cDry.push(new T.Color().lerpColors(dry[0], dry[1], rand())); }
-    return d; }
-  const pBed = dryBed(wrinkled(.0125, 18, 12, .0015, 5), M({ roughness: .7 }), [new T.Color(0x4a6a22), new T.Color(0x7a2c18)], [new T.Color(0x16100c), new T.Color(0x3a2a1e)], false);
-  const cBed = dryBed(podGeo(16, 10), podSkin({ roughness: .6 }), [new T.Color(0x3f8a26), new T.Color(0x62a336)], [new T.Color(0x56742f), new T.Color(0x7a9244)], true);
-  Z.pdry.add(pBed.mesh); Z.cdry.add(cBed.mesh);
-  const bedScale = { p: [1, .84], c: [.016, .0145] };
+  // ---------- hero: true-scale slow-motion rain of peppercorns (≈5 mm) and cardamom capsules (≈12 × 7.5 mm) pouring into a jute sack ----------
+  const NP = lite ? 260 : 560, NK = lite ? 110 : 230, TOP = 2.7, COL = .22; // column radius above the sack mouth
+  const rainPep = new T.InstancedMesh(wrinkled(1, lite ? 24 : 40, lite ? 18 : 30, .07, 5), pepperMat, NP);
+  const rainPod = new T.InstancedMesh(podGeo(lite ? 36 : 64, lite ? 24 : 40, true), heroMat, NK);
+  rainPep.frustumCulled = rainPod.frustumCulled = false; Z.rain.add(rainPep, rainPod);
+  const drops = [];
+  const spawn = (d, y) => { const a = rand() * 6.28, r = Math.sqrt(rand()) * COL; d.x = Math.cos(a) * r; d.z = Math.sin(a) * r; d.y = y; d.vy = .12 + rand() * .1;
+    d.ax = V(rand() - .5, rand() - .5, rand() - .5).normalize(); d.spin = (rand() - .5) * 2; d.q = new T.Quaternion().setFromEuler(_e.set(rand() * 6, rand() * 6, rand() * 6)); d.sc = .9 + rand() * .2; };
+  for (let i = 0; i < NP + NK; i++) { const d = { pod: i >= NP }; spawn(d, .9 + rand() * (TOP - .9)); drops.push(d); }
+  // jute sack: fine weave (≈2.5 mm threads), stencil as a separate curved decal, rolled rim
+  const prof = [[0, 0], [.42, 0], [.5, .06], [.56, .3], [.56, .62], [.52, .86], [.5, .92], [.53, .97], [.58, 1]].map(([r, y]) => new T.Vector2(r, y));
+  const sack = shadow(new T.Mesh(new T.LatheGeometry(prof, 96), M({ map: tex(juteC, 12, 4), bumpMap: tex(juteC, 12, 4, false), bumpScale: .3, roughness: 1, side: T.DoubleSide }))); Z.rain.add(sack);
+  { const c = document.createElement('canvas'); c.width = 1024; c.height = 256; const g = c.getContext('2d'); g.fillStyle = 'rgba(32,22,16,.8)'; g.textAlign = 'center';
+    g.font = '700 64px "Courier New",monospace'; g.fillText('PORTLANCE EXPORTS', 512, 110); g.font = '700 38px "Courier New",monospace'; g.fillText('PRODUCT OF INDIA · NET WT 50 KG', 512, 180);
+    const t = new T.CanvasTexture(c); t.colorSpace = T.SRGBColorSpace; t.anisotropy = ANISO;
+    const decal = new T.Mesh(new T.CylinderGeometry(.562, .562, .2, 48, 1, true, -.6, 1.2), new T.MeshStandardMaterial({ map: t, transparent: true, roughness: 1, polygonOffset: true, polygonOffsetFactor: -2 }));
+    decal.position.y = .48; Z.rain.add(decal); }
+  // the heap inside: thousands of tiny peppercorns and capsules painted into a texture, on a gently domed disc
+  const heapC = document.createElement('canvas'); heapC.width = heapC.height = 1024; { const g = heapC.getContext('2d'); g.fillStyle = '#2a2016'; g.fillRect(0, 0, 1024, 1024);
+    for (let i = 0; i < 16000; i++) { const x = rand() * 1024, y = rand() * 1024;
+      if (rand() < .62) { const r = 2.6 + rand() * .8, gr = g.createRadialGradient(x - r * .35, y - r * .35, r * .2, x, y, r); gr.addColorStop(0, '#6a5444'); gr.addColorStop(1, '#1a120d'); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.3); g.fill(); }
+      else { g.save(); g.translate(x, y); g.rotate(rand() * 6.3); const gr = g.createLinearGradient(0, -4, 0, 4); gr.addColorStop(0, '#7aa046'); gr.addColorStop(1, '#2f5418'); g.fillStyle = gr; g.beginPath(); g.ellipse(0, 0, 6.5, 4.2, 0, 0, 6.3); g.fill(); g.restore(); } } }
+  const heapGeo = new T.CircleGeometry(.5, 64); { const p = heapGeo.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, .06 * (1 - (x * x + y * y) / .25)); } heapGeo.computeVertexNormals(); }
+  const heap = shadow(new T.Mesh(heapGeo, M({ map: tex(heapC), bumpMap: tex(heapC, 1, 1, false), bumpScale: .6, roughness: .75 })), false, true); heap.rotation.x = -Math.PI / 2; Z.rain.add(heap);
   await breathe();
 
   // ---------- port: container being stuffed (x-ray while loading), yard stacks ----------
@@ -755,12 +483,12 @@ async function init() {
     g.font = '700 30px "Courier New",monospace'; g.fillText(lines[1], 256, 172); g.fillText(lines[2], 256, 212);
     g.font = '700 22px "Courier New",monospace'; g.fillText('PORTLANCE EXPORTS', 256, 266); return tex(c); };
   const stencils = { pepper: stencil(['BLACK PEPPER', 'WHOLE · SUN DRIED', 'NET WT 25 KG']), cardamom: stencil(['GREEN CARDAMOM', '7-8 MM DEEP GREEN', 'NET WT 25 KG']) };
-  const juteTop = M({ map: stencils[crop], bumpMap: tex(juteC, 1, 1, false), bumpScale: .15, roughness: 1 });
+  const juteTops = ['pepper', 'cardamom'].map(c => M({ map: stencils[c], bumpMap: tex(juteC, 1, 1, false), bumpScale: .15, roughness: 1 })); // sacks alternate the two products
   const sackGeo = new T.BoxGeometry(1, 1, 1, 10, 6, 8);
   { const p = sackGeo.attributes.position, v = V(0, 0, 0); for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const n = v.clone().normalize().multiplyScalar(.62); v.lerp(n, .55);
       p.setXYZ(i, v.x * .9, v.y * .3, v.z * .55); } weldNormals(sackGeo); }
   const sacks = [];
-  for (let i = 0; i < 24; i++) { const s = shadow(new T.Mesh(sackGeo, [juteMat, juteMat, juteTop, juteMat, juteMat, juteMat])); cont.add(s);
+  for (let i = 0; i < 24; i++) { const s = shadow(new T.Mesh(sackGeo, [juteMat, juteMat, juteTops[i % 2], juteMat, juteMat, juteMat])); cont.add(s);
     const slot = 23 - i, L = Math.floor(slot / 6), j = slot % 6, L2 = Math.floor(i / 6), j2 = i % 6;
     sacks.push({ s, i, yaw: (rand() - .5) * .12, from: V(4.3 + (j % 2) * .9, .29 + L * .27, 1.62 + Math.floor(j / 2) * .48), to: V(2.5 - Math.floor(j2 / 2) * .6, .31 + L2 * .27, (j2 % 2 ? 1 : -1) * .52) }); }
   const yardMat = M({ map: tex(corrC, 2.6, 1), bumpMap: tex(corrC, 2.6, 1, false), bumpScale: .3, roughness: .6, metalness: .3 });
@@ -771,8 +499,6 @@ async function init() {
   for (const [x, z] of [[47, 5], [68, -5.5], [86, 5.5]]) { add(new T.CylinderGeometry(.14, .2, 22, 10), barMat, x, 11, z, Z.port); add(new T.BoxGeometry(1.6, .3, .6), barMat, x, 22, z, Z.port); }
   await breathe();
 
-  // animated instance groups move far from their initial bounds; zones() already hides them when off-route
-  for (const o of [pLeavesMain, berries, stalks, cStemsMain, cLeavesMain, flowers, pods, pBed.mesh, cBed.mesh]) o.frustumCulled = false;
 
   // ---------- post-processing: depth of field (capped), soft vignette, grain; tone mapping happens here ----------
   const rt = new T.WebGLRenderTarget(1, 1, { type: T.HalfFloatType, samples: (R.capabilities.isWebGL2 && !lite) ? 4 : 0 });
@@ -806,17 +532,13 @@ async function init() {
   const postScene = new T.Scene(), postCam = new T.OrthographicCamera(-1, 1, 1, -1, 0, 1), quad = new T.Mesh(new T.PlaneGeometry(2, 2), post);
   quad.frustumCulled = false; postScene.add(quad);
 
-  // ---------- timeline: one keyframe per section, per crop (stages 4-6 shared) ----------
-  const HERO = [V(BENCH.x + .27, .99, BENCH.z + .43), V(BENCH.x - .01, .815, BENCH.z + .02)];
-  const SHARED = [[V(31.4, 1.5, 2.2), V(30.1, 0, 0)], [V(67.8, 2.2, 5.6), V(62.4, 1.2, .5)], [V(71, 7.5, 14), V(61, .6, -2.5)]];
-  const K = {
-    pepper: [HERO, [V(3.4, 2.5, 4.6), V(0, 2.3, 0)], [V(.95, 2.9, 1.25), V(.15, 2.75, .15)], [V(2, 1.25, 2.5), V(.85, .35, .65)], ...SHARED],
-    cardamom: [HERO, [V(2.9, 1.7, 3.8), V(0, 1.15, 0)], [V(-1.2, .6, 1.3), V(-.15, .04, .15)], [V(2.1, 1.15, 2.6), V(.95, .2, .75)], ...SHARED] };
-  const ATM = [ // t, horizon haze, sky top, sun colour, sun intensity, sky fill, fog density, shadow extent, lens aperture
-    [0, 0xe8ece4, 0xa9c4dc, 0xfff3df, 3, .9, .03, 1.2, 12], [1, 0xe3eae0, 0xa4c2da, 0xfff1da, 3.4, .9, .022, 4, 4], [2, 0xe3eae0, 0xa4c2da, 0xfff1da, 3.4, .9, .022, 3, 8],
-    [3, 0xe5eadf, 0xa8c3d8, 0xffefd6, 3.4, .9, .022, 3, 6], [4, 0xefe9dc, 0xb3c8d8, 0xffecd0, 3.6, .95, .02, 3.5, 7], [5, 0xe6ebef, 0xa3c0da, 0xfff6ea, 3.3, 1, .02, 7, 4], [6.4, 0xe2e9f0, 0x9dbcd8, 0xfff6ea, 3.3, 1.05, .012, 16, 2]];
-  const cA = new T.Color(), cB = new T.Color(), camLook = V(0, 0, 0), prev = {};
-  let target = 0, cur = 0, W = 1, H = 1, mobile = false, mx = 0, my = 0, last = -1, extent = 0;
+  // ---------- timeline: one camera keyframe per section ----------
+  const K = [[V(.03, 1.56, .2), V(0, 1.54, 0)], [V(.75, 1.55, 1.85), V(0, .7, 0)], [V(67.8, 2.2, 5.6), V(62.4, 1.2, .5)], [V(71, 7.5, 14), V(61, .6, -2.5)]];
+  const ATM = [ // t, horizon, sky top, sun colour, sun intensity, sky fill, fog density, shadow extent, lens aperture
+    [0, 0xeceae4, 0xdedcd5, 0xfff6ea, 3, 1, .06, 1.2, 22], [1, 0xeceae4, 0xdedcd5, 0xfff6ea, 3.2, 1, .06, 2, 7],
+    [2, 0xe6ebef, 0xa3c0da, 0xfff6ea, 3.3, 1, .02, 7, 4], [3.4, 0xe2e9f0, 0x9dbcd8, 0xfff6ea, 3.3, 1.05, .012, 16, 2]];
+  const cA = new T.Color(), cB = new T.Color(), camLook = V(0, 0, 0);
+  let target = 0, cur = 0, W = 1, H = 1, mobile = false, mx = 0, my = 0, extent = 0;
   const read = () => { target = scrollY / innerHeight; };
   addEventListener('scroll', read, { passive: true });
   addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; } });
@@ -826,18 +548,13 @@ async function init() {
     camera.aspect = W / H; camera.fov = W < H ? 52 : 38; camera.updateProjectionMatrix(); }
   addEventListener('resize', resize); resize(); read(); cur = target;
 
-  function zones(t) { // draw only what the camera can reach from this point of the route
-    const farm = t < 3.75, dry = t > 2.8 && t < 5.2;
-    Z.bench.visible = t < 1.6; Z.pepper.visible = farm && crop === 'pepper'; Z.cardamom.visible = farm && crop === 'cardamom';
-    litter.visible = farm; Z.pdry.visible = dry && crop === 'pepper'; Z.cdry.visible = dry && crop === 'cardamom'; Z.port.visible = t > 3.8; }
-
-  function update(t, time) {
-    const KK = K[crop], i = Math.min(Math.floor(t), KK.length - 2), k = ease(clamp(t - i)), a = KK[i], b = KK[i + 1];
+  function update(t, time, dt) {
+    const i = Math.min(Math.floor(t), K.length - 2), k = ease(clamp(t - i)), a = K[i], b = K[i + 1];
     camera.position.lerpVectors(a[0], b[0], k); camLook.lerpVectors(a[1], b[1], k);
     const d = camera.position.distanceTo(camLook);
     camera.position.x += mx * .02 * d; camera.position.y -= my * .012 * d; camera.lookAt(camLook);
     if (mobile) camera.setViewOffset(W, H, 0, H * .28, W, H); else camera.setViewOffset(W, H, -W * .16, 0, W, H);
-    zones(t);
+    Z.rain.visible = t < 1.6; Z.port.visible = t > 1.2;
 
     let s = 0; while (s < ATM.length - 2 && t > ATM[s + 1][0]) s++;
     const A = ATM[s], B = ATM[s + 1], q = clamp((t - A[0]) / (B[0] - A[0]));
@@ -848,75 +565,41 @@ async function init() {
     post.uniforms.focus.value = d; post.uniforms.aperture.value = lerp(A[8], B[8], q);
     const ext = lerp(A[7], B[7], q); if (Math.abs(ext - extent) > .01) { extent = ext; Object.assign(sun.shadow.camera, { left: -ext, right: ext, top: ext, bottom: -ext, near: .5, far: ext * 6 + 14 }); sun.shadow.camera.updateProjectionMatrix(); }
 
-    // hero specimens: the chosen spice turns slowly on the slab (product turntable); nothing floats
-    if (Z.bench.visible) { const sp = reduce ? 0 : time * .25, card = crop === 'cardamom';
-      bPod.position.copy(podHome); bPod.rotation.set(0, card ? .5 + sp : .5, Math.PI / 2, 'YXZ');
-      bPep.position.copy(pepHome); bPep.rotation.set(.3, card ? .2 : .2 + sp, 0); }
-
-    if (Math.abs(t - last) < 1e-5) return; last = t;
-    const changed = (key, v) => prev[key] !== v && ((prev[key] = v), true); // recompute a group only while its animation moves
-    const grow = ease(range(t, .45, 1.25));
-    if (crop === 'pepper') {
-      if (changed('pgrow', grow)) { for (const st of pMain.stems) { st.geo.setDrawRange(0, Math.floor(grow * st.segs) * 30); st.mesh.visible = grow > 0; }
-        pMain.leaves.forEach((L, i) => pLeavesMain.setMatrixAt(i, leafMatrix(L, ease(clamp((grow - L.t) / .035))))); pLeavesMain.instanceMatrix.needsUpdate = true; }
-      if (changed('spikes', clamp(t, 1.29, 3.3))) { const ripe = range(t, 1.75, 2.4);
-        spikes.forEach((S, j) => { const g = ease(range(t, 1.3 + S.o * .3, 1.65 + S.o * .3)), pick = range(t, 2.45 + S.o * .4, 2.5 + S.o * .4), land = range(t, 2.5 + S.o * .4, 2.6 + S.o * .4); // picked off the vine, then set into the basket
-          if (pick < 1) { _p.copy(S.home); _q.copy(S.q); } else { _p.copy(S.dest); _p.y += (1 - land * land) * .06; _q.copy(S.qd); }
-          _m.compose(_p, _q, _s.setScalar((pick < 1 ? g * (1 - pick) : 1) + 1e-5)); stalks.setMatrixAt(j, _m2.multiplyMatrices(_m, S.stalk));
-          for (let k = 0; k < BER; k++) { berries.setMatrixAt(j * BER + k, _m2.multiplyMatrices(_m, S.locals[k]));
-            berries.setColorAt(j * BER + k, cA.lerpColors(G0, G1, S.gv[k]).lerp(YEL, ripe * .3).lerp(RED, clamp((ripe * .5 - S.rr[k]) * 7))); } });
-        stalks.instanceMatrix.needsUpdate = berries.instanceMatrix.needsUpdate = berries.instanceColor.needsUpdate = true; }
-    } else {
-      if (changed('cgrow', grow)) { let li = 0; cMain.forEach((st, k) => { const h = ease(clamp((grow - st.t0) / .4)); cStemsMain.setMatrixAt(k, stemM(st, h));
-          for (const L of st.leaves) cLeavesMain.setMatrixAt(li++, leafM(st, L, h, ease(clamp((h - (L.r - .42) * .5) / .12)) * (.35 + .65 * h) * Math.min(1, h * 20))); });
-        cStemsMain.instanceMatrix.needsUpdate = cLeavesMain.instanceMatrix.needsUpdate = true; }
-      if (changed('panicles', clamp(t, 1.29, 3.3))) {
-        for (const P of panicles) { P.pg = ease(range(t, 1.3 + P.o * .15, 1.65 + P.o * .15)); P.geo.setDrawRange(0, Math.floor(P.pg * 60) * 24); P.mesh.visible = P.pg > 0; }
-        nodes.forEach((N, i) => { const fl = (panicles[N.pi].pg >= N.tn ? 1 : 0) * ease(range(t, 1.45 + N.o * .15, 1.65 + N.o * .15)) * (1 - ease(range(t, 1.95, 2.2)));
-          flowers.setMatrixAt(i, _m.compose(_p.copy(N.p).add(V(0, .012, 0)), _q.identity(), _s.set(.009 * fl + 1e-5, .005 * fl + 1e-5, .009 * fl + 1e-5))); });
-        const ripe = range(t, 2, 2.45);
-        podList.forEach((P, i) => { const g = ease(range(t, 1.9 + P.N.o * .2, 2.2 + P.N.o * .2)), pick = range(t, 2.45 + P.h * .4, 2.5 + P.h * .4), land = range(t, 2.5 + P.h * .4, 2.6 + P.h * .4);
-          if (pick < 1) { _p.copy(P.home); _q.copy(P.q); } else { _p.copy(P.dest); _p.y += (1 - land * land) * .05; _q.copy(P.qd); }
-          pods.setMatrixAt(i, _m.compose(_p, _q, _s.setScalar(.02 * (pick < 1 ? g * (1 - pick) : 1) + 1e-5))); pods.setColorAt(i, cA.lerpColors(PALE, DEEP, ripe * (.75 + .25 * P.v))); });
-        flowers.instanceMatrix.needsUpdate = pods.instanceMatrix.needsUpdate = pods.instanceColor.needsUpdate = true; }
+    if (Z.rain.visible) { // slow-motion fall into the sack; the heap rises as you scroll
+      const fill = lerp(.55, .9, ease(range(t, .2, 1.2))); heap.position.y = fill;
+      let ip = 0, ik = 0;
+      for (const dr of drops) {
+        dr.y -= dr.vy * dt; if (dr.y < fill + .03) spawn(dr, TOP + rand() * .3);
+        _p.set(dr.x, dr.y, dr.z); dr.q.premultiply(_q2.setFromAxisAngle(dr.ax, dr.spin * dt));
+        if (dr.pod) rainPod.setMatrixAt(ik++, _m.compose(_p, dr.q, _s.setScalar(.00625 * dr.sc))); else rainPep.setMatrixAt(ip++, _m.compose(_p, dr.q, _s.setScalar(.0024 * dr.sc)));
+      }
+      rainPep.instanceMatrix.needsUpdate = rainPod.instanceMatrix.needsUpdate = true;
     }
-    const bed = crop === 'pepper' ? pBed : cBed, bs = crop === 'pepper' ? bedScale.p : bedScale.c;
-    if (changed('dry' + crop, clamp(t, 3.2, 4.3))) { const dk = range(t, 3.3, 4.25); // time-lapse: berries already spread; they darken and shrink
-      for (let n = 0; n < NC; n++) { _p.copy(bed.spread[n]); const dn = ease(clamp(dk * 1.4 - bed.cr[n].z / 6 * .4));
-        bed.mesh.setMatrixAt(n, _m.compose(_p, _q.setFromEuler(_e.set(bed.cr[n].x, bed.cr[n].y, bed.cr[n].z)), _s.setScalar(lerp(bs[0], bs[1], dn))));
-        bed.mesh.setColorAt(n, cA.copy(bed.cFresh[n]).lerp(bed.cDry[n], dn)); }
-      bed.mesh.instanceMatrix.needsUpdate = bed.mesh.instanceColor.needsUpdate = true; }
-    for (const o of sacks) { const u = range(t, 4.4 + o.i * .028, 4.52 + o.i * .028); // each sack leaves the pallet and is set down in place
-      if (u <= 0) { o.s.position.copy(o.from); o.s.rotation.set(0, o.yaw, 0); }
-      else { o.s.position.copy(o.to); o.s.position.y += (1 - ease(u)) * .22; o.s.rotation.set(0, Math.PI / 2 + o.yaw, 0); } }
-    const shut = ease(range(t, 5.4, 5.85)); for (const D of doors) D.pivot.rotation.y = D.side * lerp(-1.78, 0, shut);
-    const xr = ease(range(t, 4.1, 4.4)) * (1 - ease(range(t, 5.8, 6.05)));
-    for (const m of skins) { m.opacity = 1 - xr * .8; m.depthWrite = xr < .02; }
-    decalMat.opacity = 1 - xr * .75; edges.material.opacity = xr * .9;
+    if (Z.port.visible) {
+      for (const o of sacks) { const u = range(t, 1.6 + o.i * .03, 1.72 + o.i * .03); // each sack leaves the pallet and is set down in place
+        if (u <= 0) { o.s.position.copy(o.from); o.s.rotation.set(0, o.yaw, 0); }
+        else { o.s.position.copy(o.to); o.s.position.y += (1 - ease(u)) * .22; o.s.rotation.set(0, Math.PI / 2 + o.yaw, 0); } }
+      const shut = ease(range(t, 2.45, 2.85)); for (const D of doors) D.pivot.rotation.y = D.side * lerp(-1.78, 0, shut);
+      const xr = ease(range(t, 1.35, 1.6)) * (1 - ease(range(t, 2.75, 2.98)));
+      for (const m of skins) { m.opacity = 1 - xr * .8; m.depthWrite = xr < .02; }
+      decalMat.opacity = 1 - xr * .75; edges.material.opacity = xr * .9;
+    }
   }
 
-  // ---------- render loop: warm-up per crop, pause when covered, adaptive quality ----------
-  const clock = new T.Clock(), links = [...rail.querySelectorAll('a')], veil = document.getElementById('veil');
+  // ---------- render loop: warm-up, pause when covered, adaptive quality ----------
+  const clock = new T.Clock(), links = [...rail.querySelectorAll('a')];
   const draw = () => { R.setRenderTarget(rt); R.render(scene, camera); R.setRenderTarget(null); R.render(postScene, postCam); };
-  const warmed = new Set(); let warmQ = [];
-  const queueWarm = c => { if (!warmed.has(c)) { warmed.add(c); for (let k = 0; k <= 6; k++) warmQ.push([c, k]); } };
-  queueWarm(crop);
-  let switching = false;
-  cropHooks.push(c => { juteTop.map = stencils[c]; for (const k in prev) delete prev[k]; last = -1;
-    if (reduce) return; switching = true; veil.classList.add('on'); queueWarm(c); setTimeout(() => { switching = false; if (!warmQ.length) veil.classList.remove('on'); }, 300); });
-  let onScreen = true; new IntersectionObserver(es => { onScreen = es[0].isIntersecting; }).observe(document.getElementById('journey-wrap'));
-  let lastNow = 0, ema = 16, slowFrames = 0, railIdx = -1, railPast = -1, shown = false;
+  let warm = 0, onScreen = true, lastNow = 0, ema = 16, slowFrames = 0, railIdx = -1, railPast = -1;
+  new IntersectionObserver(es => { onScreen = es[0].isIntersecting; }).observe(document.getElementById('journey-wrap'));
   (function loop(now) {
     requestAnimationFrame(loop);
-    if (warmQ.length) { const [c, k] = warmQ.shift(), keep = crop; crop = c; last = -1; for (const key in prev) delete prev[key];
-      update(k, 0); draw(); crop = keep; last = -1; for (const key in prev) delete prev[key];
-      if (!warmQ.length) { if (!shown) { shown = true; canvas.classList.add('ready'); } if (!switching) veil.classList.remove('on'); } return; }
+    if (warm < K.length) { update(warm, 0, 0); draw(); if (++warm === K.length) canvas.classList.add('ready'); return; } // pre-render each section once
     if (!onScreen) { lastNow = now; return; } // the 3D is fully covered by the solid sections: skip all work
     const dt = Math.min(.1, (now - lastNow) / 1000 || .016); lastNow = now;
     cur = reduce ? target : cur + (target - cur) * (1 - Math.exp(-dt * 4.7));
-    const t = clamp(cur, 0, 6.4), time = clock.getElapsedTime();
-    wind.value = reduce ? 0 : time; post.uniforms.time.value = time;
-    update(t, time); draw();
+    const t = clamp(cur, 0, 3.4), time = clock.getElapsedTime();
+    post.uniforms.time.value = time;
+    update(t, time, reduce ? 0 : dt); draw();
     if (!document.hidden && dt < .1) { ema += (dt * 1000 - ema) * .05; slowFrames = ema > 22 ? slowFrames + 1 : 0; if (slowFrames > 90 && qi < QUALITY.length - 1) { qi++; slowFrames = 0; ema = 16; resize(); } }
     const idx = Math.round(clamp(cur, 0, stages.length - 1));
     if (idx !== railIdx) { railIdx = idx; links.forEach((el, i) => el.classList.toggle('on', i === idx)); }

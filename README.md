@@ -5,15 +5,15 @@ Static site for portlanceexports.com (black pepper and green cardamom): `index.h
 No build step, no server code.
 
 ## How the page works
-- **Crop switch** (header tabs, hero cards, `?crop=pepper` / `?crop=cardamom` in the URL) re-points the
-  3D route, the stage copy and the enquiry form's product.
-- **Route:** intro bench → grow → fruit → harvest → sun-drying (pepper) / curing (cardamom) → pack
-  (container shown see-through while loading) → ship. Daylight scenes, procedural textures only.
-- **Spec bench:** a second small 3D view with both specimens at true relative size on a millimetre
-  ruler (drag to turn), and "Add to enquiry" buttons that pre-fill the form.
-- **Performance:** only the zone the camera can reach is drawn; drawing stops while the 3D is covered;
-  phones / low-memory devices get a lighter tier (no depth-of-field blur, smaller shadows, fewer
-  plants); quality steps down automatically if frames are slow.
+- **Hero:** a true-scale, slow-motion rain of whole black peppercorns and 7–8 mm green cardamom
+  capsules (macro camera with depth of field). Scrolling pulls the camera back to reveal the spices
+  pouring into a Portlance jute sack that fills up.
+- **Export:** sacks are lowered into a see-through container, the doors close, then the sealed
+  container in the port yard.
+- **Spec bench:** both specimens at true relative size on a millimetre ruler (drag to turn), with
+  "Add to enquiry" buttons that pre-fill the form.
+- **Performance:** only the visible zone is drawn; drawing stops while the 3D is covered; phones /
+  low-memory devices get a lighter tier; quality steps down automatically if frames are slow.
 
 ## Hosting
 Deployed on Vercel from this repo's `main` branch: every push to `main` redeploys automatically.
