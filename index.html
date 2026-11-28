@@ -360,26 +360,39 @@ async function init() {
     for (let i = 0; i < p.count; i++) { const k = p.getX(i).toFixed(4) + ',' + p.getY(i).toFixed(4) + ',' + p.getZ(i).toFixed(4); (map.get(k) || map.set(k, []).get(k)).push(i); }
     for (const ids of map.values()) if (ids.length > 1) { const s = V(0, 0, 0); ids.forEach(i => s.add(V(n.getX(i), n.getY(i), n.getZ(i)))); s.normalize(); ids.forEach(i => n.setXYZ(i, s.x, s.y, s.z)); }
     return g; }
-  function peppercorn(ws, hs) { const g = new T.SphereGeometry(1, ws, hs), p = g.attributes.position, v = V(0, 0, 0), col = [], dark = new T.Color(0x0b0806), light = new T.Color(0x4a3c33), c = new T.Color();
+  // peppercorn: cellular (honeycomb) wrinkles like a dried black pepper berry — raised light-brown ridges around dark
+  // sunken cells, slightly irregular shape and a small pitted stalk scar. `rw` = ridge width (wider for low-poly rain copies).
+  const pepCells = (() => { const pts = [], N = 58, ga = Math.PI * (3 - Math.sqrt(5)); for (let i = 0; i < N; i++) { const y = 1 - (i + .5) / N * 2, r = Math.sqrt(1 - y * y), a = i * ga;
+      pts.push(V(Math.cos(a) * r + (hash(i, 1, 2) - .5) * .22, y + (hash(i, 3, 4) - .5) * .22, Math.sin(a) * r + (hash(i, 5, 6) - .5) * .22).normalize()); } return pts; })();
+  const SCAR = V(.35, .5, .79).normalize();
+  function peppercorn(ws, hs, rw = .085) { const g = new T.SphereGeometry(1, ws, hs), p = g.attributes.position, v = V(0, 0, 0), col = [], c = new T.Color();
+    const cellDark = new T.Color(0x1c120d), cellMid = new T.Color(0x3a271c), ridgeC = new T.Color(0x6e4c33), scarC = new T.Color(0x7d6046);
     for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const n = v.clone().normalize();
-      const lump = (noise3(n.x * 1.6 + 3, n.y * 1.6, n.z * 1.6 + 9) - .5) * .12; // slightly irregular, not a perfect ball
-      let ridge = 0, a = 1, f = 3.2; for (let o = 0; o < 4; o++) { ridge += a * Math.pow(1 - Math.abs(noise3(n.x * f + 11, n.y * f + 5, n.z * f + 3) * 2 - 1), 2.2); a *= .5; f *= 2.05; }
-      ridge /= 1.875; v.copy(n).multiplyScalar(1 + lump - (1 - ridge) * .13); p.setXYZ(i, v.x, v.y, v.z);
-      c.lerpColors(dark, light, Math.pow(ridge, 1.6) * .9 + noise3(n.x * 9, n.y * 9, n.z * 9) * .1); col.push(c.r, c.g, c.b); }
+      let d1 = 9, d2 = 9; for (const q of pepCells) { const d = n.distanceTo(q); if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) d2 = d; }
+      const edge = d2 - d1, ridge = 1 - sm(clamp(edge / rw)), cup = sm(clamp(1 - d1 / .32)); // ridge: 1 on cell borders; cup: 1 at cell centres
+      const lump = (noise3(n.x * 1.5 + 3, n.y * 1.5, n.z * 1.5 + 9) - .5) * .1, grain = (noise3(n.x * 22, n.y * 22, n.z * 22) - .5) * .012;
+      let h = 1 + lump + ridge * .045 - cup * .055 + grain;
+      const sa = n.angleTo(SCAR), scar = 1 - sm(clamp(sa / .2)); h -= scar * .07; h += (1 - sm(clamp(Math.abs(sa - .21) / .04))) * .02; // pit with a slight rim
+      v.copy(n).multiplyScalar(h); p.setXYZ(i, v.x, v.y, v.z);
+      c.lerpColors(cellDark, cellMid, clamp(noise3(n.x * 6, n.y * 6, n.z * 6) * 1.2 - .1)).lerp(ridgeC, Math.pow(ridge, 1.3) * .85).lerp(scarC, scar * .8);
+      col.push(c.r, c.g, c.b); }
     g.setAttribute('color', new T.Float32BufferAttribute(col, 3)); return weldNormals(g); }
   function wrinkled(r, ws, hs, amp, freq) { const g = new T.SphereGeometry(r, ws, hs), p = g.attributes.position, v = V(0, 0, 0);
     for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const n = v.clone().normalize(); let s = 0, a = 1, f = freq;
       for (let o = 0; o < 4; o++) { s += a * (1 - Math.abs(noise3(n.x * f + 11, n.y * f + 5, n.z * f + 3) * 2 - 1)); a *= .5; f *= 2.1; }
       v.addScaledVector(n, -s * amp); p.setXYZ(i, v.x, v.y, v.z); }
     return weldNormals(g); }
-  // cardamom capsule (unit length 2): blunt stalk end, pointed beak end, rounded three-sided section, fine ridges; `fine` adds bend and dents
+  // cardamom capsule (unit length 2, stalk at y = -1): elongated ≈1.9 : 1, three soft lobes, fine lengthwise ribs,
+  // a narrow neck below the stalk and a slightly pointed tip; `fine` adds a gentle bend and unevenness
   function podGeo(ws, hs, fine) { const g = new T.SphereGeometry(1, ws, hs), p = g.attributes.position, v = V(0, 0, 0);
     for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), th = Math.atan2(z, x);
-      const rr = Math.pow(Math.hypot(x, z), y < 0 ? .78 : 1.18);
-      const ridge = fine ? .0008 * Math.abs(Math.sin(18 * th)) : .004 * Math.sin(24 * th);
-      const f = (1 + .11 * Math.cos(3 * th) + ridge) * (1 - .14 * Math.max(0, y) ** 3) * (fine ? .6 : .53);
-      v.set(Math.cos(th) * rr * f, y * (y < 0 ? .97 : 1.02), Math.sin(th) * rr * f);
-      if (fine) { const n = V(v.x, v.y * .3, v.z).normalize(); v.addScaledVector(n, (noise3(v.x * 2 + 7, v.y * 1.5, v.z * 2) - .5) * .022); v.x += .06 * y * y; }
+      const body = Math.pow(Math.max(0, 1 - y * y), .42);                       // fuller, more cylindrical than an ellipse
+      const neck = y < -.55 ? lerp(.42, 1, sm(clamp((y + 1) / .45))) : 1;          // pinched neck at the stalk end
+      const tip = 1 - .22 * Math.pow(Math.max(0, y), 4);                          // slightly pointed at the far end
+      const rib = fine ? .012 * Math.pow(Math.abs(Math.sin(15 * th)), 3) : 0;
+      const f = body * neck * tip * (1 + .1 * Math.cos(3 * th) + rib) * .52;
+      v.set(Math.cos(th) * f, y, Math.sin(th) * f);
+      if (fine) { v.x += .05 * y * y; v.multiplyScalar(1 + (noise3(x * 2 + 7, y * 1.5, z * 2) - .5) * .03); }
       p.setXYZ(i, v.x, v.y, v.z); }
     return weldNormals(g); }
   const shadow = (o, c = true, r = true) => { o.castShadow = c; o.receiveShadow = r; return o; };
@@ -409,31 +422,32 @@ async function init() {
   const quay = shadow(new T.Mesh(new T.PlaneGeometry(60, 70), concMat), false); quay.rotation.x = -Math.PI / 2; quay.position.set(72, .006, 0); Z.port.add(quay);
 
   // ---------- product specimens (shared by the rain, the heap and the spec bench) ----------
+  const vein = (u, v) => Math.pow(Math.abs(Math.sin((u + .008 * Math.sin(v * 11 + u * 37) + .004 * Math.sin(v * 29)) * Math.PI * 30)), 30) * (.55 + .45 * noise2p(u * 30, v * 6, 30, 6)); // thin pale lengthwise veins
   const heroC = paint(1024, 512, (u, v) => {
-    const ridge = Math.pow(Math.abs(Math.sin(u * Math.PI * 36)), .7), lobe = .5 + .5 * Math.cos(3 * (Math.PI - u * Math.PI * 2));
-    const n = fbm2(u, v, 24, 6, 4), speck = noise2p(u * 256, v * 128, 256, 128);
-    let c = mix(rgb(0x4c6a26), rgb(0x8aa552), ridge * .08 + n * .55 + lobe * .18 + speck * .1);
-    if (v > .82) c = mix(c, rgb(0xa49a5a), Math.pow((v - .82) / .18, 1.6) * .85);
-    if (v < .07) c = mix(c, rgb(0x55552c), (1 - v / .07) * .7);
+    const lobe = .5 + .5 * Math.cos(3 * (Math.PI - u * Math.PI * 2)), n = fbm2(u, v, 18, 5, 4), speck = noise2p(u * 256, v * 128, 256, 128);
+    let c = mix(rgb(0x5e9426), rgb(0x9ccc48), n * .55 + lobe * .25 + speck * .08);
+    c = mix(c, rgb(0xc4e284), vein(u, v) * .38);
+    if (v > .86) c = mix(c, rgb(0xa8b45a), Math.pow((v - .86) / .14, 1.5) * .7);   // stalk end (y = -1 is v = 1)
+    if (v < .05) c = mix(c, rgb(0x4d6e22), (1 - v / .05) * .6);
     return c; });
   await breathe();
-  const heroBump = paint(1024, 512, (u, v) => { const k = (Math.pow(Math.abs(Math.sin(u * Math.PI * 36)), .7) * .25 + fbm2(u, v, 20, 6, 3) * .75) * 255; return [k, k, k]; }); // soft ribs + gentle unevenness; no pixel-level grain (it flickers when small)
-  const heroMat = new T.MeshPhysicalMaterial({ map: tex(heroC), bumpMap: tex(heroBump, 1, 1, false), bumpScale: .0025, roughness: .78, sheen: .35, sheenColor: 0xc9d9a0, sheenRoughness: .8 });
+  const heroBump = paint(1024, 512, (u, v) => { const k = (vein(u, v) * .45 + fbm2(u, v, 20, 6, 3) * .55) * 255; return [k, k, k]; }); // soft ribs + gentle unevenness; no pixel-level grain (it flickers when small)
+  const heroMat = new T.MeshPhysicalMaterial({ map: tex(heroC), bumpMap: tex(heroBump, 1, 1, false), bumpScale: .003, roughness: .62, sheen: .3, sheenColor: 0xe2f2b0, sheenRoughness: .7 });
   const heroPodGeo = podGeo(lite ? 120 : 160, lite ? 72 : 96, true);
-  const pepperMat = new T.MeshPhysicalMaterial({ vertexColors: true, roughness: .72, sheen: .35, sheenColor: 0x6a5a4e, sheenRoughness: .8 }), pepperGeo = peppercorn(128, 96);
-  const strawMat = M({ color: 0x8c7d48, roughness: .85 }), tipMat = M({ color: 0x4f5229, roughness: .75 });
+  const pepperMat = new T.MeshPhysicalMaterial({ vertexColors: true, roughness: .72, sheen: .35, sheenColor: 0x6a5a4e, sheenRoughness: .8 }), pepperGeo = peppercorn(lite ? 128 : 200, lite ? 96 : 150);
+  const strawMat = M({ color: 0x9aa456, roughness: .8 }), tipMat = M({ color: 0x4d6a24, roughness: .7 });
   function makePod() { const g = new T.Group(); g.add(shadow(new T.Mesh(heroPodGeo, heroMat)));
-    const stub = shadow(new T.Mesh(new T.CylinderGeometry(.045, .07, .1, 16), strawMat)); stub.position.set(.06, -1.01, 0); g.add(stub);
-    const beak = shadow(new T.Mesh(new T.ConeGeometry(.045, .08, 16), tipMat)); beak.position.set(.06, 1.04, 0); g.add(beak); return g; }
+    const stub = shadow(new T.Mesh(new T.CylinderGeometry(.045, .07, .1, 16), strawMat)); stub.position.set(.05, -1.02, 0); g.add(stub);
+    const beak = shadow(new T.Mesh(new T.ConeGeometry(.03, .05, 16), tipMat)); beak.position.set(.05, 1.01, 0); g.add(beak); return g; }
   await breathe();
 
   // ---------- hero: true-scale slow-motion rain of peppercorns (≈5 mm) and cardamom capsules (≈12 × 7.5 mm) pouring into a jute sack ----------
   const NP = lite ? 260 : 560, NK = lite ? 110 : 230, TOP = 2.7, COL = .22; // column radius above the sack mouth
-  const rainPep = new T.InstancedMesh(peppercorn(lite ? 36 : 64, lite ? 28 : 48), pepperMat, NP);
+  const rainPep = new T.InstancedMesh(peppercorn(lite ? 40 : 56, lite ? 30 : 42, .11), pepperMat, NP);
   const rainPod = new T.InstancedMesh(podGeo(lite ? 36 : 64, lite ? 24 : 40, true), heroMat, NK);
   rainPep.frustumCulled = rainPod.frustumCulled = false; Z.rain.add(rainPep, rainPod);
   const drops = [];
-  const spawn = (d, y) => { const a = rand() * 6.28, r = Math.sqrt(rand()) * COL; d.x = Math.cos(a) * r; d.z = Math.sin(a) * r; d.y = y; d.vy = .12 + rand() * .1;
+  const spawn = (d, y) => { let a, r; do { a = rand() * 6.28; r = Math.sqrt(rand()) * COL; } while (Math.sin(a) * r > .09); d.x = Math.cos(a) * r; d.z = Math.sin(a) * r; d.y = y; d.vy = .12 + rand() * .1; // keep the stream clear of the lens
     d.ax = V(rand() - .5, rand() - .5, rand() - .5).normalize(); d.spin = (rand() - .5) * 2; d.q = new T.Quaternion().setFromEuler(_e.set(rand() * 6, rand() * 6, rand() * 6)); d.sc = .9 + rand() * .2; };
   for (let i = 0; i < NP + NK; i++) { const d = { pod: i >= NP }; spawn(d, .9 + rand() * (TOP - .9)); drops.push(d); }
   // jute sack: fine weave (≈2.5 mm threads), stencil as a separate curved decal, rolled rim
@@ -453,9 +467,12 @@ async function init() {
   const heap = shadow(new T.Mesh(heapGeo, M({ map: tex(heapC), bumpMap: tex(heapC, 1, 1, false), bumpScale: .6, roughness: .75 })), false, true); heap.rotation.x = -Math.PI / 2; Z.rain.add(heap);
   await breathe();
 
-  // showcase capsule: one pod drifts slowly toward the lens and back, turning, so its colour and ribs can be inspected
-  const showPod = makePod(); showPod.scale.setScalar(.00625); showPod.rotation.order = 'YXZ'; Z.rain.add(showPod);
-  const _dir = V(0, 0, 0);
+  // showcase: a random falling piece (peppercorn or capsule) is drawn toward the lens, turns, and returns to the rain.
+  // While it is close, a high-detail copy stands in for its low-poly rain instance.
+  const hiPep = shadow(new T.Mesh(pepperGeo, pepperMat), false, false), hiPod = makePod(); hiPod.traverse(o => o.castShadow = false);
+  hiPep.visible = hiPod.visible = false; Z.rain.add(hiPep, hiPod);
+  const show = { phase: 'idle', t0: 0, wait: 2.5, dr: null, from: V(0, 0, 0) }, _dir = V(0, 0, 0), _tgt = V(0, 0, 0);
+  let focusNow = 1;
 
   // ---------- port: container being stuffed (x-ray while loading), yard stacks ----------
   const PORT = V(60, 0, 0), CL = 6.06, CH = 2.59, CW = 2.44;
@@ -574,22 +591,33 @@ async function init() {
     sun.color.copy(cA.setHex(A[3])).lerp(cB.setHex(B[3]), q); sun.intensity = lerp(A[4], B[4], q); hemi.intensity = lerp(A[5], B[5], q);
     sun.target.position.copy(camLook); sun.position.copy(camLook).add(V(-4, 9, 5));
     post.uniforms.focus.value = d; post.uniforms.aperture.value = lerp(A[8], B[8], q);
-    showPod.visible = t < .55;
-    if (showPod.visible) { // slow zoom cycle (~16 s): far → close-up → far; the lens stays focused on the pod
-      const z = .5 - .5 * Math.cos(time * Math.PI * 2 / 16), pd = lerp(.16, .05, ease(z));
-      camera.getWorldDirection(_dir); showPod.position.copy(camera.position).addScaledVector(_dir, pd); showPod.position.y += .004;
-      showPod.rotation.set(.18 + Math.sin(time * .21) * .08, time * .22, Math.PI / 2 + Math.sin(time * .17) * .12);
-      post.uniforms.focus.value = lerp(pd, d, range(t, .05, .45)); }
     const ext = lerp(A[7], B[7], q); if (Math.abs(ext - extent) > .01) { extent = ext; Object.assign(sun.shadow.camera, { left: -ext, right: ext, top: ext, bottom: -ext, near: .5, far: ext * 6 + 14 }); sun.shadow.camera.updateProjectionMatrix(); }
 
     if (Z.rain.visible) { // slow-motion fall into the sack; the heap rises as you scroll
       const fill = lerp(.55, .9, ease(range(t, .2, 1.2))); heap.position.y = fill;
+      // showcase timing: out 3.2 s, hold 3.6 s, back 3.2 s, then a random pause; only while the hero view is on screen
+      if (show.phase === 'idle' && t < .35 && time - show.t0 > show.wait) {
+        const wantPod = rand() < .5, cands = drops.filter(dr => dr.pod === wantPod && dr.y > 1.45 && dr.y < 1.72 && dr.z < .1 && Math.abs(dr.x) < .1);
+        if (cands.length) { show.dr = cands[Math.floor(rand() * cands.length)]; show.from.set(show.dr.x, show.dr.y, show.dr.z); show.phase = 'move'; show.t0 = time; }
+      }
+      let sk = 0, sp = null;
+      if (show.phase === 'move') { const e = time - show.t0, D = 10;
+        if (e > D || t > .5) { show.dr.y = show.from.y; show.phase = 'idle'; show.t0 = time; show.wait = 2 + rand() * 3; show.dr = null; }
+        else { sk = e < 3.2 ? ease(e / 3.2) : e < 6.8 ? 1 : 1 - ease((e - 6.8) / 3.2);
+          camera.getWorldDirection(_dir); _tgt.copy(camera.position).addScaledVector(_dir, show.dr.pod ? .075 : .026); _tgt.y += show.dr.pod ? .004 : .0015;
+          sp = show.dr; } }
       let ip = 0, ik = 0;
       for (const dr of drops) {
-        dr.y -= dr.vy * dt; if (dr.y < fill + .03) spawn(dr, TOP + rand() * .3);
-        _p.set(dr.x, dr.y, dr.z); dr.q.premultiply(_q2.setFromAxisAngle(dr.ax, dr.spin * dt));
-        if (dr.pod) rainPod.setMatrixAt(ik++, _m.compose(_p, dr.q, _s.setScalar(.00625 * dr.sc))); else rainPep.setMatrixAt(ip++, _m.compose(_p, dr.q, _s.setScalar(.0024 * dr.sc)));
+        if (dr === sp) { _p.lerpVectors(show.from, _tgt, sk); dr.q.premultiply(_q2.setFromAxisAngle(dr.ax, dr.spin * .3 * dt)); }
+        else { dr.y -= dr.vy * dt; if (dr.y < fill + .03) spawn(dr, TOP + rand() * .3); _p.set(dr.x, dr.y, dr.z); dr.q.premultiply(_q2.setFromAxisAngle(dr.ax, dr.spin * dt)); }
+        const sc = (dr.pod ? .0072 : .0024) * dr.sc, hide = dr === sp && sk > .02;
+        if (dr === sp) { const hi = dr.pod ? hiPod : hiPep; hi.visible = hide; hi.position.copy(_p); hi.quaternion.copy(dr.q); hi.scale.setScalar(sc); }
+        _m.compose(_p, dr.q, _s.setScalar(hide ? 1e-6 : sc));
+        if (dr.pod) rainPod.setMatrixAt(ik++, _m); else rainPep.setMatrixAt(ip++, _m);
       }
+      if (!sp) hiPep.visible = hiPod.visible = false;
+      focusNow = sp ? camera.position.distanceTo(_p.lerpVectors(show.from, _tgt, sk)) : focusNow + (d - focusNow) * (1 - Math.exp(-dt * 4)); // lens locks onto the showcased piece, then eases back
+      if (t < .5) post.uniforms.focus.value = lerp(focusNow, d, range(t, .1, .5));
       rainPep.instanceMatrix.needsUpdate = rainPod.instanceMatrix.needsUpdate = true;
     }
     if (Z.port.visible) {
@@ -642,7 +670,7 @@ async function init() {
     ruler.position.set(0, -.4, 0); ruler.receiveShadow = true; s2.add(ruler); // specimens rest on the ruler; ticks along its front edge
     const floor = new T.Mesh(new T.PlaneGeometry(400, 400), new T.ShadowMaterial({ opacity: .18 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -.8; floor.receiveShadow = true; s2.add(floor); }
   const sPep = shadow(new T.Mesh(pepperGeo, pepperMat)); sPep.scale.setScalar(2.25); sPep.position.set(-9.75, 2.2, -.6); s2.add(sPep); // spans the 8–12.5 mm marks
-  const sPod = makePod(); sPod.scale.setScalar(6.25); sPod.position.set(6.25, 3.75, -.6); s2.add(sPod); // lying on its side: 7.5 mm across, about 12.5 mm long
+  const sPod = makePod(); sPod.scale.setScalar(7.2); sPod.position.set(6.5, 3.75, -.6); s2.add(sPod); // lying on its side: 7.5 mm across, about 12.5 mm long
   cam2.position.set(0, 26, 38); cam2.lookAt(0, 0, 1);
   let rotY = 0, vel = 0, dragging = false, lastX = 0, visible2 = false, idle = 0; // rotY = π/2: capsule width across the ruler
   sc.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; sc.setPointerCapture(e.pointerId); });
